@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'features/start/presentation/screen/go_clock.dart';
+import 'features/setings/presentation/screen/settings_page.dart';
+import 'features/start/presentation/screen/clock_page.dart';
 
 void main() {
   runApp(const ClockApp());
@@ -12,7 +13,7 @@ class ClockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: GoClock(),
+      home: ClockPage(),
     );
   }
 }
