@@ -1,4 +1,3 @@
-
 part of 'timer_bloc.dart';
 
 //Timer bloc имеет следующие состояния:
@@ -15,44 +14,28 @@ part of 'timer_bloc.dart';
 // если состояние равно , TimerRunPauseпользователь сможет возобновить таймер и сбросить его.
 // если состояние равно , TimerRunCompleteпользователь сможет сбросить таймер.
 
+class TimerState extends Equatable {
+  final int whiteDuration;
+  final int blackDuration;
+  final GameState gamestate;
+  static int blackCount = 0;
+  static int whiteCount = 0;
+  static bool isBlackFirst = false;
 
+  const TimerState(this.whiteDuration, this.blackDuration, this.gamestate);
 
-sealed class TimerState extends Equatable {
-  final int duration;
-
-  const TimerState(this.duration);
-
-  @override
-  List<Object?> get props => [duration];
-}
-
-final class TimerInitial extends TimerState {
-  const TimerInitial(super.duration);
-
-  @override
-  String toString() {
-    return 'TimerInitial{ duration: $duration}';
+  TimerState copyWith({
+    int? whiteDuration,
+    int? blackDuration,
+    GameState? gamestate,
+  }) {
+    return TimerState(
+      whiteDuration ?? this.whiteDuration,
+      blackDuration ?? this.blackDuration,
+      gamestate ?? this.gamestate,
+    );
   }
-}
-
-final class TimerRunPause extends TimerState {
-  TimerRunPause(super.duration);
 
   @override
-  String toString() {
-    return 'TimerRunPause{ duration: $duration}';
-  }
-}
-
-final class TimerRunInProgress extends TimerState {
-  TimerRunInProgress(super.duration);
-
-  @override
-  String toString() {
-    return 'TimerRunInProgress{ duration: $duration}';
-  }
-}
-
-final class TimerRunComplete extends TimerState {
-  TimerRunComplete(): super(0);
+  List<Object?> get props => [blackDuration, whiteDuration, gamestate];
 }
