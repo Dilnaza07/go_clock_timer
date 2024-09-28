@@ -81,32 +81,14 @@ class TimerViewWhite extends StatelessWidget {
           color: Colors.grey,
           child: InkWell(
             onTap: () {
-              if (TimerState.isBlackFirst == false) {
-                if (state.gamestate == GameState.initial && TimerState.whiteCount == 0) {
-                  context
-                      .read<TimerBloc>()
-                      .add(WhiteTimerStarted(whiteDuration: state.whiteDuration));
-
-                }
-                if (state.gamestate == GameState.blackPaused && TimerState.blackCount == 0) {
-                  context
-                      .read<TimerBloc>()
-                      .add(BlackTimerStarted(blackDuration: state.blackDuration));
-                  TimerState.whiteCount++;
-                }
-              }
-
-              if (state.gamestate == GameState.blackPaused&& TimerState.blackCount > 0 ) {
-                context.read<TimerBloc>().add(BlackTimerResumed());
-                TimerState.whiteCount++;
-              }
+              context.read<TimerBloc>().add(WhiteTimerClick());
             },
             child: Column(children: [
               SizedBox(height: 20),
               Row(children: [
                 SizedBox(width: 25),
                 Text(
-                  'Ход: 1',
+                  'Ход: ${state.whiteCount}',
                   style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 SizedBox(width: 80),
@@ -167,34 +149,14 @@ class TimerViewBlack extends StatelessWidget {
           color: Colors.grey,
           child: InkWell(
             onTap: () {
-              if (TimerState.blackCount == 0 && TimerState.whiteCount == 0) {
-                TimerState.isBlackFirst = true;
-
-                if (state.gamestate == GameState.initial && TimerState.blackCount == 0) {
-                  context
-                      .read<TimerBloc>()
-                      .add(BlackTimerStarted(blackDuration: state.blackDuration));
-
-                }
-                if (state.gamestate == GameState.blackRunning && TimerState.whiteCount == 0) {
-                  context
-                      .read<TimerBloc>()
-                      .add(WhiteTimerStarted(whiteDuration: state.whiteDuration));
-                  TimerState.blackCount++;
-                }
-              }
-
-              if (state.gamestate == GameState.blackRunning && TimerState.whiteCount >0) {
-                context.read<TimerBloc>().add(WhiteTimerResumed());
-                TimerState.blackCount++;
-              }
+              context.read<TimerBloc>().add(BlackTimerClick());
             },
             child: Column(children: [
               SizedBox(height: 20),
               Row(children: [
                 SizedBox(width: 25),
                 Text(
-                  'Ход: 1',
+                  'Ход: ${state.blackCount}',
                   style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 SizedBox(width: 80),
@@ -293,61 +255,24 @@ class Actions extends StatelessWidget {
             height: 120,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
               FloatingActionButton(
-                child: Icon(Icons.play_arrow),
-                onPressed: () => context.read<TimerBloc>().add(BlackTimerStarted(
-                    blackDuration: state.blackDuration, gameState: GameState.blackRunning)),
-              ),
-              FloatingActionButton(
-                child: Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                ),
-                onPressed: () => context
-                    .read<TimerBloc>()
-                    .add(WhiteTimerStarted(whiteDuration: state.whiteDuration)),
-              ),
-
-              FloatingActionButton(
                   child: Icon(Icons.pause),
                   onPressed: () {
                     context.read<TimerBloc>().add(const GamePaused());
                   }),
-              FloatingActionButton(
-                  child: Icon(Icons.lock_reset),
-                  onPressed: () {
-                    context.read<TimerBloc>().add(const GameResumed());
-                  }),
+
               FloatingActionButton(
                   child: Icon(
-                    Icons.lock_reset,
-                    color: Colors.red,
+                    Icons.refresh,
                   ),
                   onPressed: () {
                     context.read<TimerBloc>().add(const GameReset());
                   }),
+              FloatingActionButton(
+                  child: Icon(Icons.settings),
+                  onPressed: () {
+                  //  context.read<TimerBloc>().add();
+                  }),
 
-              FloatingActionButton(
-                child: Icon(Icons.play_arrow),
-                onPressed: () => context.read<TimerBloc>().add(const BlackTimerResumed()),
-              ),
-              FloatingActionButton(
-                child: Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                ),
-                onPressed: () => context.read<TimerBloc>().add(const WhiteTimerResumed()),
-              ),
-              // FloatingActionButton(
-              //   child: Icon(Icons.replay),
-              //   onPressed: () => context.read<TimerBloc>().add(const TimerReset()),
-              // ),
-              // FloatingActionButton(
-              //   child: Icon(
-              //     Icons.replay,
-              //     color: Colors.white,
-              //   ),
-              //   onPressed: () => context.read<TimerBloc>().add(const TimerReset()),
-              // ),
             ]),
           );
         });

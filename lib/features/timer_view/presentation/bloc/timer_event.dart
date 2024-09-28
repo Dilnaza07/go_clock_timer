@@ -12,6 +12,20 @@ sealed class TimerEvent {
   const TimerEvent();
 }
 
+// final class FirstTimerStarted extends TimerEvent{
+// const FirstTimerStarted( { required this.isBlackFirst});
+//
+// final bool isBlackFirst;
+// }
+
+final class BlackTimerClick extends TimerEvent {
+  const BlackTimerClick();
+}
+
+final class WhiteTimerClick extends TimerEvent {
+  const WhiteTimerClick();
+}
+
 final class BlackTimerStarted extends TimerEvent {
   const BlackTimerStarted({required this.blackDuration, this.gameState = GameState.blackRunning});
 
@@ -19,18 +33,23 @@ final class BlackTimerStarted extends TimerEvent {
   final GameState gameState;
 }
 
+final class BlackBoyOmiStarted extends TimerEvent {
+  const BlackBoyOmiStarted({required this.blackDuration, this.gameState = GameState.blackRunning});
+
+  final int blackDuration;
+  final GameState gameState;
+}
+
+
 final class WhiteTimerStarted extends TimerEvent {
-  const WhiteTimerStarted({required this.whiteDuration,this.gameState = GameState.blackPaused});
+  const WhiteTimerStarted({required this.whiteDuration, this.gameState = GameState.blackPaused});
+
   final int whiteDuration;
   final GameState gameState;
 }
 
 final class BlackTimerPaused extends TimerEvent {
   const BlackTimerPaused();
-}
-
-final class WhiteTimerPaused extends TimerEvent {
-  const WhiteTimerPaused();
 }
 
 final class GamePaused extends TimerEvent {
@@ -45,13 +64,9 @@ final class BlackTimerResumed extends TimerEvent {
   const BlackTimerResumed();
 }
 
-final class WhiteTimerResumed extends TimerEvent {
-  const WhiteTimerResumed();
-}
-
-final class GameReset extends TimerEvent { //сбросить оба таймера до начального состояния
+final class GameReset extends TimerEvent {
+  //сбросить оба таймера до начального состояния
   const GameReset();
-
 }
 
 final class _BlackTimerTicked extends TimerEvent {

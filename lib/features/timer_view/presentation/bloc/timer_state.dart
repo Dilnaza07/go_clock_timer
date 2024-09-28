@@ -18,24 +18,51 @@ class TimerState extends Equatable {
   final int whiteDuration;
   final int blackDuration;
   final GameState gamestate;
-  static int blackCount = 0;
-  static int whiteCount = 0;
-  static bool isBlackFirst = false;
+  final int blackCount;
 
-  const TimerState(this.whiteDuration, this.blackDuration, this.gamestate);
+  final int whiteCount;
+
+  final bool isBlackFirst;
+  final bool isGameRunning;
+
+  const TimerState({
+    required this.whiteDuration,
+    required this.blackDuration,
+    required this.gamestate,
+    required this.blackCount,
+    required this.whiteCount,
+    required this.isBlackFirst,
+    required this.isGameRunning,
+  });
 
   TimerState copyWith({
     int? whiteDuration,
     int? blackDuration,
+    int? blackCount,
+    int? whiteCount,
+    bool? isBlackFirst,
+    bool? isGameRunning,
     GameState? gamestate,
   }) {
     return TimerState(
-      whiteDuration ?? this.whiteDuration,
-      blackDuration ?? this.blackDuration,
-      gamestate ?? this.gamestate,
+      whiteDuration: whiteDuration ?? this.whiteDuration,
+      blackDuration: blackDuration ?? this.blackDuration,
+      blackCount: blackCount ?? this.blackCount,
+      whiteCount: whiteCount ?? this.whiteCount,
+      isBlackFirst: isBlackFirst ?? this.isBlackFirst,
+      isGameRunning: isGameRunning ?? this.isGameRunning,
+      gamestate: gamestate ?? this.gamestate,
     );
   }
 
   @override
-  List<Object?> get props => [blackDuration, whiteDuration, gamestate];
+  List<Object?> get props => [
+        blackDuration,
+        whiteDuration,
+        gamestate,
+        isGameRunning,
+        isBlackFirst,
+        blackCount,
+        whiteCount
+      ];
 }
