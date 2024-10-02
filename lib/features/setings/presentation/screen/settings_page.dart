@@ -10,6 +10,8 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(title: Text('Настройки'),centerTitle: true,),
       body: ListView(
         children: [
+          Text('Введите основное время: '),
+          TextField(),
 
         ],
       ),

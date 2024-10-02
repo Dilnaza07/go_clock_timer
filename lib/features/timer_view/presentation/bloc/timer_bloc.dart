@@ -13,8 +13,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _blackticker;
   final Ticker _whiteTicker;
 
-  static const int _duration = 60;
-  static const int _boyomi = 60;
+  static const int _duration = 10;
+  static const int _boyomi = 5;
+  static const int _boyomiCount = 3;
 
   StreamSubscription<int>? _blackTickerSubscription;
   StreamSubscription<int>? _whiteTickerSubscription;
@@ -24,13 +25,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
       : _blackticker = blackTicker,
         _whiteTicker = whiteTicker,
         super(TimerState(
-          whiteDuration: _duration,
-          blackDuration: _duration,
-          gamestate: GameState.initial,
-          blackCount: 0,
-          whiteCount: 0,
-          isBlackFirst: false,
-          isGameRunning: false)) {
+        whiteDuration: _duration,
+        blackDuration: _duration,
+        gamestate: GameState.initial,
+        blackCount: 0,
+        whiteCount: 0,
+        isBlackFirst: false,
+        isGameRunning: false,
+        whiteByoyomiCount: 0,
+        blackByoyomiCount: 0,
+      )) {
 //TODO: реализовать обработчики событий
     on<BlackTimerClick>(_onBlackTimerClick);
     on<WhiteTimerClick>(_onWhiteTimerClick);
@@ -55,6 +59,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _whiteTickerSubscription?.cancel();
     return super.close();
   }
+
+
 
   _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) {
     if (state.gamestate == GameState.initial && state.blackCount == 0) {
@@ -104,6 +110,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _blackTickerSubscription = _blackticker
         .tick(ticks: state.blackDuration)
         .listen((duration) => add(_BlackTimerTicked(blackDuration: duration)));
+    _blackTickerSubscription?.onDone(()=>debugPrint('_blackTickerSubscription.onDone'));
+    _blackTickerSubscription?.onError((error)=>debugPrint('_blackTickerSubscription.onError $error'));
+  //  _blackTickerSubscription?.onData((data)=>debugPrint('_blackTickerSubscription.onData $data'));
   }
 
   void _onWhiteStarted(WhiteTimerStarted event, Emitter<TimerState> emit) {
@@ -114,6 +123,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _whiteTickerSubscription = _whiteTicker
         .tick(ticks: state.whiteDuration)
         .listen((duration) => add(_WhiteTimerTicked(whiteDuration: duration)));
+    _whiteTickerSubscription?.onDone(()=>debugPrint('_whiteTickerSubscription.onDone'));
+    _whiteTickerSubscription?.onError((error)=>debugPrint('_whiteTickerSubscription.onError $error'));
+  //  _whiteTickerSubscription?.onData((data)=>debugPrint('_whiteTickerSubscription.onData $data'));
   }
 
   void _onBlackPaused(BlackTimerPaused event, Emitter<TimerState> emit) {
@@ -126,10 +138,12 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   void _onBlackResumed(BlackTimerResumed event, Emitter<TimerState> emit) {
-    debugPrint('_onBlackResumed');
+    debugPrint('_onBlackResumed  ${state.gamestate}');
     if (state.gamestate == GameState.blackPaused) {
       _whiteTickerSubscription?.pause();
       _blackTickerSubscription?.resume();
+
+
 
       emit(state.copyWith(gamestate: GameState.blackRunning));
     }
@@ -139,28 +153,42 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     debugPrint(
         '_onBlackTicked,state.blackDuration ${event.blackDuration}, gamestate: ${state
             .gamestate} ');
-    emit(
-      event.blackDuration > 0
-          ? state.copyWith(
+
+    if( event.blackDuration > 0){
+      emit( state.copyWith(
           blackDuration: event.blackDuration,
           gamestate: GameState.blackRunning,
-          isGameRunning: true)
-          : state.copyWith(blackDuration: 0, gamestate: GameState.blackTimeOver),
-    );
+          isGameRunning: true));
+    }else if(_boyomiCount > state.blackByoyomiCount) {
+      emit(state.copyWith(blackDuration: _boyomi, blackByoyomiCount: state.blackByoyomiCount +1));
+      add(BlackTimerStarted(blackDuration: _boyomi));
+      debugPrint(
+          'Началось доп время ЧЕРНЫХ, период: ${state.blackByoyomiCount} ');
+    }else{
+
+      emit( state.copyWith(blackDuration: 0, gamestate: GameState.blackTimeOver));
+    }
+
   }
 
   void _onWhiteTicked(_WhiteTimerTicked event, Emitter<TimerState> emit) {
     debugPrint(
         '_onWhiteTicked,state.whiteDuration ${event.whiteDuration}, gamestate: ${state
             .gamestate} ');
-    emit(
-      event.whiteDuration > 0
-          ? state.copyWith(
+    if( event.whiteDuration > 0){
+      emit( state.copyWith(
           whiteDuration: event.whiteDuration,
           gamestate: GameState.blackPaused,
-          isGameRunning: true)
-          : state.copyWith(whiteDuration: 0, gamestate: GameState.whiteTimeOver),
-    );
+          isGameRunning: true));
+    }else if(_boyomiCount > state.whiteByoyomiCount) {
+      emit(state.copyWith(whiteDuration: _boyomi, whiteByoyomiCount: state.whiteByoyomiCount +1));
+      add(WhiteTimerStarted(whiteDuration: _boyomi));
+      debugPrint(
+          'Началось доп время БЕЛЫХ, период: ${state.whiteByoyomiCount} ');
+    }else{
+
+      emit( state.copyWith(whiteDuration: 0, gamestate: GameState.whiteTimeOver));
+    }
   }
 
   void _onReset(GameReset event, Emitter<TimerState> emit) {
@@ -168,7 +196,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _blackTickerSubscription?.cancel();
     _whiteTickerSubscription?.cancel();
     emit(state.copyWith(
-        blackCount: 0, whiteCount: 0, isBlackFirst: false, gamestate: GameState.initial));
+        blackCount: 0, whiteCount: 0, isBlackFirst: false, gamestate: GameState.initial, blackByoyomiCount: 0,whiteByoyomiCount: 0));
 
     emit(state.copyWith(
         blackDuration: _duration, whiteDuration: _duration, gamestate: GameState.initial));
@@ -194,5 +222,4 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
       _whiteTickerSubscription?.resume();
     }
   }
-
 }

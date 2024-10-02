@@ -92,10 +92,7 @@ class TimerViewWhite extends StatelessWidget {
                   style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 SizedBox(width: 80),
-                Text(
-                  '3x(00:30)',
-                  style: TextStyle(fontSize: 25, color: Colors.white),
-                ),
+                WhiteByoYomiText(),
               ]),
               SizedBox(height: 80),
               Center(
@@ -136,6 +133,47 @@ class TimerViewWhite extends StatelessWidget {
   }
 }
 
+class WhiteByoYomiText extends StatelessWidget {
+  const WhiteByoYomiText({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    @override
+    final duration = context.select((TimerBloc bloc) => bloc.state.whiteDuration);
+    final period = context.select((TimerBloc bloc) => bloc.state.whiteByoyomiCount);
+    final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
+    final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
+
+    return Text(
+      '${period}x($minutesStr:$secondsStr)',
+      style: TextStyle(fontSize: 25, color: Colors.white),
+    );
+  }
+}
+
+
+class BlackByoYomiText extends StatelessWidget {
+  const BlackByoYomiText({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    @override
+    final duration = context.select((TimerBloc bloc) => bloc.state.blackDuration);
+    final period = context.select((TimerBloc bloc) => bloc.state.blackByoyomiCount);
+    final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
+    final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
+
+    return Text(
+      '${period}x($minutesStr:$secondsStr)',
+      style: TextStyle(fontSize: 25, color: Colors.white),
+    );
+  }
+}
+
 class TimerViewBlack extends StatelessWidget {
   const TimerViewBlack({
     super.key,
@@ -160,10 +198,7 @@ class TimerViewBlack extends StatelessWidget {
                   style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 SizedBox(width: 80),
-                Text(
-                  '3x(00:30)',
-                  style: TextStyle(fontSize: 25, color: Colors.white),
-                ),
+                BlackByoYomiText(),
               ]),
               SizedBox(height: 80),
               Center(
@@ -259,7 +294,6 @@ class Actions extends StatelessWidget {
                   onPressed: () {
                     context.read<TimerBloc>().add(const GamePaused());
                   }),
-
               FloatingActionButton(
                   child: Icon(
                     Icons.refresh,
@@ -270,9 +304,8 @@ class Actions extends StatelessWidget {
               FloatingActionButton(
                   child: Icon(Icons.settings),
                   onPressed: () {
-                  //  context.read<TimerBloc>().add();
+                    //  context.read<TimerBloc>().add();
                   }),
-
             ]),
           );
         });

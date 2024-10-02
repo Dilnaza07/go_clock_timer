@@ -33,13 +33,6 @@ final class BlackTimerStarted extends TimerEvent {
   final GameState gameState;
 }
 
-final class BlackBoyOmiStarted extends TimerEvent {
-  const BlackBoyOmiStarted({required this.blackDuration, this.gameState = GameState.blackRunning});
-
-  final int blackDuration;
-  final GameState gameState;
-}
-
 
 final class WhiteTimerStarted extends TimerEvent {
   const WhiteTimerStarted({required this.whiteDuration, this.gameState = GameState.blackPaused});

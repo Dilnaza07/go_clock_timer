@@ -17,6 +17,8 @@ part of 'timer_bloc.dart';
 class TimerState extends Equatable {
   final int whiteDuration;
   final int blackDuration;
+  final int whiteByoyomiCount; // Количество использованных байоми периодов для белых
+  final int blackByoyomiCount; // Количество использованных байоми периодов для черных
   final GameState gamestate;
   final int blackCount;
 
@@ -28,6 +30,8 @@ class TimerState extends Equatable {
   const TimerState({
     required this.whiteDuration,
     required this.blackDuration,
+    required this.whiteByoyomiCount,
+    required this.blackByoyomiCount,
     required this.gamestate,
     required this.blackCount,
     required this.whiteCount,
@@ -38,6 +42,8 @@ class TimerState extends Equatable {
   TimerState copyWith({
     int? whiteDuration,
     int? blackDuration,
+    int? blackByoyomiCount,
+    int? whiteByoyomiCount,
     int? blackCount,
     int? whiteCount,
     bool? isBlackFirst,
@@ -47,6 +53,8 @@ class TimerState extends Equatable {
     return TimerState(
       whiteDuration: whiteDuration ?? this.whiteDuration,
       blackDuration: blackDuration ?? this.blackDuration,
+      whiteByoyomiCount: whiteByoyomiCount ?? this.whiteByoyomiCount,
+      blackByoyomiCount: blackByoyomiCount ?? this.blackByoyomiCount,
       blackCount: blackCount ?? this.blackCount,
       whiteCount: whiteCount ?? this.whiteCount,
       isBlackFirst: isBlackFirst ?? this.isBlackFirst,
@@ -63,6 +71,8 @@ class TimerState extends Equatable {
         isGameRunning,
         isBlackFirst,
         blackCount,
-        whiteCount
+        whiteCount,
+        blackByoyomiCount,
+        whiteByoyomiCount,
       ];
 }

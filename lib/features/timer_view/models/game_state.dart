@@ -4,6 +4,8 @@ enum GameState {
   blackPaused, //  whiteRunning
   blackTimeOver,
   whiteTimeOver,
+  blackByoyomiTime,
+
   //settings
 
 
