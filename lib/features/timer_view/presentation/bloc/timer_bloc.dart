@@ -64,7 +64,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) {
     if (state.gamestate == GameState.initial && state.blackCount == 0) {
-      add(BlackTimerStarted(blackDuration: state.blackDuration));
+      add(WhiteTimerStarted(whiteDuration: state.whiteDuration));
       debugPrint(
           'BlackTimerStarted, blackCount: ${state.blackCount}, gamestate: ${state.gamestate}');
     } else if (state.gamestate == GameState.blackRunning && state.whiteCount == 0) {
@@ -84,7 +84,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   _onWhiteTimerClick(WhiteTimerClick event, Emitter<TimerState> emit) {
     if (state.gamestate == GameState.initial && state.whiteCount == 0) {
-      add(WhiteTimerStarted(whiteDuration: state.whiteDuration));
+      add(BlackTimerStarted(blackDuration: state.blackDuration));
       debugPrint('WhiteTimerStarted, whiteCount: ${state.whiteCount} gamestate ${state.gamestate}');
     } else if (state.gamestate == GameState.blackPaused && state.blackCount == 0) {
       emit(state.copyWith(whiteCount: state.whiteCount + 1));
