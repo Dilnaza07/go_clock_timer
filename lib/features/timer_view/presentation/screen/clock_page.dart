@@ -39,31 +39,21 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Stack(
-        children: [
-          Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Transform.rotate(
-                  angle: 3.14,
-                  child: Stack(children: [
-                    TimerViewWhite(),
-                  ]),
-                ),
-              ),
-              Actions(),
-              Expanded(
-                flex: 3,
-                child: Stack(children: [
-                  TimerViewBlack(),
-                ]),
-              ),
-            ],
+    return Column(
+      children: [
+        Expanded(
+          flex: 1,
+          child: Transform.rotate(
+            angle: 3.14,
+            child: TimerViewWhite(),
           ),
-        ],
-      ),
+        ),
+        Actions(),
+        Expanded(
+          flex: 1,
+          child: TimerViewBlack(),
+        ),
+      ],
     );
   }
 }
@@ -83,8 +73,9 @@ class TimerViewWhite extends StatelessWidget {
             onTap: () {
               context.read<TimerBloc>().add(WhiteTimerClick());
             },
-            child: Column(children: [
-              SizedBox(height: 20),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
               Row(children: [
                 SizedBox(width: 25),
                 Text(
@@ -94,11 +85,11 @@ class TimerViewWhite extends StatelessWidget {
                 SizedBox(width: 80),
                 WhiteByoYomiText(),
               ]),
-              SizedBox(height: 80),
+              // SizedBox(height: 80),
               Center(
                 child: TimerTextWhite(),
               ),
-              SizedBox(height: 80),
+              // SizedBox(height: 80),
               Row(
                 children: [
                   SizedBox(
@@ -189,22 +180,26 @@ class TimerViewBlack extends StatelessWidget {
             onTap: () {
               context.read<TimerBloc>().add(BlackTimerClick());
             },
-            child: Column(children: [
-              SizedBox(height: 20),
-              Row(children: [
-                SizedBox(width: 25),
-                Text(
-                  'Ход: ${state.blackCount}',
-                  style: TextStyle(fontSize: 25, color: Colors.white),
-                ),
-                SizedBox(width: 80),
-                BlackByoYomiText(),
-              ]),
-              SizedBox(height: 80),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Row(children: [
+                  SizedBox(width: 25),
+                  Text(
+                    'Ход: ${state.blackCount}',
+                    style: TextStyle(fontSize: 25, color: Colors.white),
+                  ),
+                  SizedBox(width: 80),
+                  BlackByoYomiText(),
+                ]),
+              ),
+              // SizedBox(height: 80),
               Center(
                 child: TimerTextBlack(),
               ),
-              SizedBox(height: 80),
+              // SizedBox(height: 80),
               Row(
                 children: [
                   SizedBox(

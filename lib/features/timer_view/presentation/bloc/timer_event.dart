@@ -8,8 +8,11 @@ part of 'timer_bloc.dart';
 // TimerReset: информирует TimerBloc о том, что таймер следует сбросить в исходное состояние.
 // _TimerTicked: информирует TimerBloc о том, что произошел тик и что ему необходимо обновить свое состояние соответствующим образом.
 
-sealed class TimerEvent {
+sealed class TimerEvent extends Equatable {
   const TimerEvent();
+
+  @override
+  List<Object?> get props => [];
 }
 
 // final class FirstTimerStarted extends TimerEvent{
@@ -31,14 +34,20 @@ final class BlackTimerStarted extends TimerEvent {
 
   final int blackDuration;
   final GameState gameState;
+
+  @override
+  List<Object?> get props => [blackDuration, gameState];
 }
 
 
 final class WhiteTimerStarted extends TimerEvent {
-  const WhiteTimerStarted({required this.whiteDuration, this.gameState = GameState.blackPaused});
+  const WhiteTimerStarted({required this.whiteDuration, required this.gameState});
 
   final int whiteDuration;
   final GameState gameState;
+
+  @override
+  List<Object?> get props => [whiteDuration, gameState];
 }
 
 final class BlackTimerPaused extends TimerEvent {
@@ -66,10 +75,16 @@ final class _BlackTimerTicked extends TimerEvent {
   const _BlackTimerTicked({required this.blackDuration});
 
   final int blackDuration;
+
+  @override
+  List<Object?> get props => [blackDuration];
 }
 
 final class _WhiteTimerTicked extends TimerEvent {
   const _WhiteTimerTicked({required this.whiteDuration});
 
   final int whiteDuration;
+
+  @override
+  List<Object?> get props => [whiteDuration];
 }
