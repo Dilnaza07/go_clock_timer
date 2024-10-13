@@ -15,7 +15,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   static const int _duration = 5;
   static const int _boyomi = 3;
-  static const int _boyomiCount = 3;
+  static const int period = 3;
 
   StreamSubscription<int>? _blackTickerSubscription;
   StreamSubscription<int>? _whiteTickerSubscription;
@@ -167,7 +167,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           blackDuration: event.blackDuration,
           gamestate: GameState.blackRunning,
           isGameRunning: true));
-    }else if(_boyomiCount > state.blackByoyomiCount) {
+    }else if(period > state.blackByoyomiCount) {
       emit(state.copyWith(blackDuration: _boyomi, blackByoyomiCount: state.blackByoyomiCount +1));
       add(BlackTimerStarted(blackDuration: _boyomi));
       debugPrint(
@@ -188,7 +188,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           whiteDuration: event.whiteDuration,
           // gamestate: GameState.blackPaused,
           isGameRunning: true));
-    }else if(_boyomiCount > state.whiteByoyomiCount) {
+    }else if(period > state.whiteByoyomiCount) {
       emit(state.copyWith(whiteDuration: _boyomi, whiteByoyomiCount: state.whiteByoyomiCount +1));
       add(WhiteTimerStarted(whiteDuration: _boyomi, gameState: GameState.blackPaused));
       debugPrint(

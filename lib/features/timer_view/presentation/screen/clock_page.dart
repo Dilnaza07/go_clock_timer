@@ -65,6 +65,8 @@ class TimerViewWhite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  //  final period = context.select((TimerBloc bloc) => bloc.state.);
+
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
         return Material(
@@ -96,7 +98,7 @@ class TimerViewWhite extends StatelessWidget {
                     width: 30,
                   ),
                   Text(
-                    'Период: ',
+                    'Период:',
                     style: TextStyle(color: Colors.white, fontSize: 25),
                   ),
                   Icon(
