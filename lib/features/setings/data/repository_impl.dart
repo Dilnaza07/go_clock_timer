@@ -23,15 +23,15 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
 
 
-    await prefs?.setInt(timeKey, model.time);
+    await prefs?.setInt(timeKey, model.time * 60 );
     await prefs?.setInt(incrementKey, model.increment);
     await prefs?.setInt(periodsKey, model.periods);
   }
 
   @override
   Future<TimerModel> getTimerSettings() async {
-    final int time = prefs?.getInt(timeKey) ?? 60;
-    final int increment = prefs?.getInt(incrementKey) ?? 10;
+    final int time = prefs?.getInt(timeKey) ?? 1200;
+    final int increment = prefs?.getInt(incrementKey) ?? 30;
     final int periods = prefs?.getInt(periodsKey) ?? 3;
 
     debugPrint("time $time");
