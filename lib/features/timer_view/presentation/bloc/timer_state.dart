@@ -27,7 +27,13 @@ class TimerState extends Equatable {
   final bool isBlackFirst;
   final bool isGameRunning;
 
-  const TimerState({
+  final int duration;
+  final int boyomi;
+  final int period;
+
+  const TimerState({required this.duration,
+    required this.boyomi,
+    required this.period,
     required this.whiteDuration,
     required this.blackDuration,
     required this.whiteByoyomiCount,
@@ -40,6 +46,9 @@ class TimerState extends Equatable {
   });
 
   TimerState copyWith({
+    int? duration,
+    int? boyomi,
+    int? period,
     int? whiteDuration,
     int? blackDuration,
     int? blackByoyomiCount,
@@ -60,11 +69,15 @@ class TimerState extends Equatable {
       isBlackFirst: isBlackFirst ?? this.isBlackFirst,
       isGameRunning: isGameRunning ?? this.isGameRunning,
       gamestate: gamestate ?? this.gamestate,
+      duration: duration ?? this.duration,
+      boyomi: boyomi ?? this.boyomi,
+      period: period ?? this.period,
     );
   }
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props =>
+      [
         blackDuration,
         whiteDuration,
         gamestate,
@@ -74,5 +87,8 @@ class TimerState extends Equatable {
         whiteCount,
         blackByoyomiCount,
         whiteByoyomiCount,
+        duration,
+        boyomi,
+        period
       ];
 }

@@ -4,11 +4,12 @@ class SettingsState extends Equatable {
   final int duration;
   final int boyomi;
   final int period;
+
   final SettingsStateEnum settingsState;
 
   const SettingsState({required this.duration, required this.boyomi, required this.period, required this.settingsState});
 
-  SettingsState copyWith({required int? duration, required int? boyomi, required int? period, SettingsStateEnum? settingsState}) {
+  SettingsState copyWith({ int? duration,  int? boyomi,  int? period, SettingsStateEnum? settingsState}) {
     return SettingsState(duration: duration ?? this.duration, boyomi: boyomi?? this.boyomi, period: period?? this.period, settingsState: settingsState?? this.settingsState);
   }
 

@@ -1,7 +1,7 @@
 class TimerModel {
-  final String time;
-  final String increment;
-  final String periods;
+  final int time;
+  final int increment;
+  final int periods;
 
   TimerModel({
     required this.time,
@@ -11,9 +11,9 @@ class TimerModel {
 
 
   TimerModel copyWith({
-    String? time,
-    String? increment,
-    String? periods,
+    int? time,
+    int? increment,
+    int? periods,
   }) {
     return TimerModel(
       time: time ?? this.time,

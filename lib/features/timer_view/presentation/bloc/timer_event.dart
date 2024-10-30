@@ -88,3 +88,9 @@ final class _WhiteTimerTicked extends TimerEvent {
   @override
   List<Object?> get props => [whiteDuration];
 }
+
+
+final class TimerInitialLoad extends TimerEvent{
+
+  const TimerInitialLoad();
+}

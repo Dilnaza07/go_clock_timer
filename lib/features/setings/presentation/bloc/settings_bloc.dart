@@ -25,12 +25,19 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final TextEditingController incrementController = TextEditingController();
   final TextEditingController periodsController = TextEditingController();
 
-  _onSaveSettings(SettingsDataSaved event, Emitter<SettingsState> emit) {
-    final model = TimerModel(
-        time: timeController.text,
-        increment: incrementController.text,
-        periods: periodsController.text);
+  _onSaveSettings(SettingsDataSaved event, Emitter<SettingsState> emit) async {
 
-     repository.saveTimerSettings(model);
+    final time = int.tryParse(timeController.text)?? 60;
+    final increment = int.tryParse(incrementController.text)?? 10;
+    final periods = int.tryParse(periodsController.text)?? 3;
+    final model = TimerModel(
+
+        time: time,
+        increment: increment,
+        periods: periods);
+
+     await repository.saveTimerSettings(model);
+
+     emit(state.copyWith(settingsState: SettingsStateEnum.settingsSaved));
   }
 }

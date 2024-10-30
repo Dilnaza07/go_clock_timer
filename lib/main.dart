@@ -15,8 +15,8 @@ class ClockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ClockPage(),
-     // home: SettingsScreen(),
+     // home: ClockPage(),
+      home: SettingsScreen(),
     );
   }
 }

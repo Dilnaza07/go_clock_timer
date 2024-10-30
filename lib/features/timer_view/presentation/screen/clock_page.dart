@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_clock/features/setings/presentation/screen/set_page.dart';
 import 'package:go_clock/features/timer_view/models/game_state.dart';
 
+import '../../../../core/di/init_module.dart';
 import '../../ticker.dart';
 import '../bloc/timer_bloc.dart';
 
@@ -12,7 +14,7 @@ class ClockPage extends StatelessWidget {
   Widget build(BuildContext context) {
     GameState;
     return BlocProvider(
-      create: (context) => TimerBloc(blackTicker: Ticker(), whiteTicker: Ticker()),
+      create: (context) => getIt<TimerBloc>(),
       child: const TimerView(),
     );
   }
@@ -301,7 +303,13 @@ class Actions extends StatelessWidget {
               FloatingActionButton(
                   child: Icon(Icons.settings),
                   onPressed: () {
-                    //  context.read<TimerBloc>().add();
+                    context.read<TimerBloc>().add(const GamePaused());
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsScreen()),
+
+                    );
                   }),
             ]),
           );

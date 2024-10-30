@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:go_clock/features/setings/domain/repository.dart';
 import 'package:go_clock/features/setings/models/timer_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,22 +14,30 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   void init() async {
     prefs = await SharedPreferences.getInstance();
+
   }
 
   @override
-  void saveTimerSettings(TimerModel model) async {
+  Future saveTimerSettings(TimerModel model) async {
     _model = model;
 
-    await prefs?.setString(timeKey, model.time);
-    await prefs?.setString(incrementKey, model.increment);
-    await prefs?.setString(periodsKey, model.periods);
+
+
+    await prefs?.setInt(timeKey, model.time);
+    await prefs?.setInt(incrementKey, model.increment);
+    await prefs?.setInt(periodsKey, model.periods);
   }
 
-  void getTimerSettings() async {
-    final String time = prefs?.getString(timeKey) ?? "120";
-    final String increment = prefs?.getString(incrementKey) ?? "30";
-    final String periods = prefs?.getString(periodsKey) ?? '3';
+  @override
+  Future<TimerModel> getTimerSettings() async {
+    final int time = prefs?.getInt(timeKey) ?? 60;
+    final int increment = prefs?.getInt(incrementKey) ?? 10;
+    final int periods = prefs?.getInt(periodsKey) ?? 3;
 
-    TimerModel(time: time, increment: increment, periods: periods);
+    debugPrint("time $time");
+    debugPrint("increment $increment");
+    debugPrint("periods $periods");
+
+    return TimerModel(time: time, increment: increment, periods: periods);
   }
 }
