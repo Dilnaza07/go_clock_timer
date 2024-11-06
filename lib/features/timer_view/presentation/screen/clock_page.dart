@@ -71,8 +71,17 @@ class TimerViewWhite extends StatelessWidget {
 
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
+        Color? fieldColor = Colors.grey;
+        if( state.gamestate == GameState.blackPaused){
+          fieldColor = Colors.purpleAccent; }
+        // else if(state.isGameRunning==false && state.gamestate!= GameState.initial){
+        //   fieldColor = Colors.yellow;}
+        else if(state.gamestate == GameState.whiteTimeOver){
+          fieldColor = Colors.red[800];
+        }
+
         return Material(
-          color: Colors.grey,
+        color: fieldColor,
           child: InkWell(
             onTap: () {
               context.read<TimerBloc>().add(WhiteTimerClick());
@@ -87,7 +96,7 @@ class TimerViewWhite extends StatelessWidget {
                   style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 SizedBox(width: 80),
-                WhiteByoYomiText(),
+              //  WhiteByoYomiText(),
               ]),
               // SizedBox(height: 80),
               Center(
@@ -100,23 +109,8 @@ class TimerViewWhite extends StatelessWidget {
                     width: 30,
                   ),
                   Text(
-                    'Период:',
+                    'Период: ${state.whiteByoyomiCount}/${state.period}',
                     style: TextStyle(color: Colors.white, fontSize: 25),
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
                   ),
                 ],
               ),
@@ -128,46 +122,46 @@ class TimerViewWhite extends StatelessWidget {
   }
 }
 
-class WhiteByoYomiText extends StatelessWidget {
-  const WhiteByoYomiText({
-    super.key,
-  });
+// class WhiteByoYomiText extends StatelessWidget {
+//   const WhiteByoYomiText({
+//     super.key,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     @override
+//     final duration = context.select((TimerBloc bloc) => bloc.state.whiteDuration);
+//     final period = context.select((TimerBloc bloc) => bloc.state.whiteByoyomiCount);
+//     final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
+//     final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
+//
+//     return Text(
+//       '${period}x($minutesStr:$secondsStr)',
+//       style: TextStyle(fontSize: 25, color: Colors.white),
+//     );
+//   }
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    @override
-    final duration = context.select((TimerBloc bloc) => bloc.state.whiteDuration);
-    final period = context.select((TimerBloc bloc) => bloc.state.whiteByoyomiCount);
-    final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
-    final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
 
-    return Text(
-      '${period}x($minutesStr:$secondsStr)',
-      style: TextStyle(fontSize: 25, color: Colors.white),
-    );
-  }
-}
-
-
-class BlackByoYomiText extends StatelessWidget {
-  const BlackByoYomiText({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    @override
-    final duration = context.select((TimerBloc bloc) => bloc.state.blackDuration);
-    final period = context.select((TimerBloc bloc) => bloc.state.blackByoyomiCount);
-    final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
-    final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
-
-    return Text(
-      '${period}x($minutesStr:$secondsStr)',
-      style: TextStyle(fontSize: 25, color: Colors.white),
-    );
-  }
-}
+// class BlackByoYomiText extends StatelessWidget {
+//   const BlackByoYomiText({
+//     super.key,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     @override
+//     final duration = context.select((TimerBloc bloc) => bloc.state.blackDuration);
+//     final period = context.select((TimerBloc bloc) => bloc.state.blackByoyomiCount);
+//     final minutesStr = ((duration / 60) % 60).floor().toString().padLeft(2, '0');
+//     final secondsStr = (duration % 60).floor().toString().padLeft(2, '0');
+//
+//     return Text(
+//       '${period}x($minutesStr:$secondsStr)',
+//       style: TextStyle(fontSize: 25, color: Colors.white),
+//     );
+//   }
+// }
 
 class TimerViewBlack extends StatelessWidget {
   const TimerViewBlack({
@@ -178,8 +172,17 @@ class TimerViewBlack extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
+
+        Color? fieldColor = Colors.grey;
+        if( state.gamestate == GameState.blackRunning){
+          fieldColor = Colors.purpleAccent; }
+        // else if(state.isGameRunning==false && state.gamestate!= GameState.initial){
+        //   fieldColor = Colors.orange;}
+        else if(state.gamestate == GameState.blackTimeOver){
+          fieldColor = Colors.red;
+        }
         return Material(
-          color: Colors.grey,
+          color: fieldColor,
           child: InkWell(
             onTap: () {
               context.read<TimerBloc>().add(BlackTimerClick());
@@ -196,7 +199,7 @@ class TimerViewBlack extends StatelessWidget {
                     style: TextStyle(fontSize: 25, color: Colors.white),
                   ),
                   SizedBox(width: 80),
-                  BlackByoYomiText(),
+                 // BlackByoYomiText(),
                 ]),
               ),
               // SizedBox(height: 80),
@@ -210,24 +213,10 @@ class TimerViewBlack extends StatelessWidget {
                     width: 30,
                   ),
                   Text(
-                    'Период: ',
+                    'Период: ${state.blackByoyomiCount}/${state.period}',
                     style: TextStyle(color: Colors.white, fontSize: 25),
                   ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  Icon(
-                    Icons.circle,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+
                 ],
               ),
             ]),

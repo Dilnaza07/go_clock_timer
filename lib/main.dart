@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'core/di/init_module.dart';
+import 'features/setings/presentation/screen/set2.dart';
 import 'features/setings/presentation/screen/set_page.dart';
 import 'features/setings/presentation/screen/settings_page.dart';
 import 'features/timer_view/presentation/screen/clock_page.dart';
@@ -15,8 +16,10 @@ class ClockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     // home: ClockPage(),
+     // home: Settings2Page(),
+     // home: TimerSettingsPage(),
       home: SettingsScreen(),
+
     );
   }
 }

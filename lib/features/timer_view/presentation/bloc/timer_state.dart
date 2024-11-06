@@ -26,6 +26,7 @@ class TimerState extends Equatable {
 
   final bool isBlackFirst;
   final bool isGameRunning;
+  final bool isBayomi;
 
   final int duration;
   final int boyomi;
@@ -43,6 +44,7 @@ class TimerState extends Equatable {
     required this.whiteCount,
     required this.isBlackFirst,
     required this.isGameRunning,
+    required this.isBayomi,
   });
 
   TimerState copyWith({
@@ -57,6 +59,7 @@ class TimerState extends Equatable {
     int? whiteCount,
     bool? isBlackFirst,
     bool? isGameRunning,
+    bool? isBayomi,
     GameState? gamestate,
   }) {
     return TimerState(
@@ -68,6 +71,7 @@ class TimerState extends Equatable {
       whiteCount: whiteCount ?? this.whiteCount,
       isBlackFirst: isBlackFirst ?? this.isBlackFirst,
       isGameRunning: isGameRunning ?? this.isGameRunning,
+      isBayomi: isBayomi ?? this.isBayomi,
       gamestate: gamestate ?? this.gamestate,
       duration: duration ?? this.duration,
       boyomi: boyomi ?? this.boyomi,
@@ -89,6 +93,7 @@ class TimerState extends Equatable {
         whiteByoyomiCount,
         duration,
         boyomi,
-        period
+        period,
+        isBayomi
       ];
 }

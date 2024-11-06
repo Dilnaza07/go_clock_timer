@@ -27,9 +27,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   _onSaveSettings(SettingsDataSaved event, Emitter<SettingsState> emit) async {
 
-    final time = int.tryParse(timeController.text)?? 60;
+    final time = int.tryParse(timeController.text)?? 1;
     final increment = int.tryParse(incrementController.text)?? 10;
-    final periods = int.tryParse(periodsController.text)?? 3;
+    final periods = int.tryParse(periodsController.text)?? 2;
     final model = TimerModel(
 
         time: time,
