@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:go_clock/features/timer_view/models/game_state.dart';
 import 'package:flutter/material.dart';
-import '../../../setings/domain/repository.dart';
-import '../../../setings/models/timer_model.dart';
+import '../../../settings/domain/repository.dart';
+import '../../../settings/models/timer_model.dart';
 import '../../ticker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +25,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   StreamSubscription<int>? _whiteTickerSubscription;
 
   //TODO: установить начальное состояние
-  TimerBloc({required this.repository, required Ticker blackTicker, required Ticker whiteTicker})
+  TimerBloc({required this.repository, required Ticker blackTicker, required Ticker whiteTicker, required TimerModel timerModel})
       : _blackticker = blackTicker,
         // _whiteTicker = whiteTicker,
         super(TimerState(
@@ -55,7 +55,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<_WhiteTimerTicked>(_onWhiteTicked);
     on<GamePaused>(_onGamePaused);
 
-    add(TimerInitialLoad());
+    add(TimerInitialLoad(timerModel: timerModel));
   }
 
   @override
@@ -71,7 +71,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   }
 
   _onTimerInitialLoad(TimerInitialLoad event, Emitter<TimerState> emit) async {
-    TimerModel model = await repository.getTimerSettings();
+    TimerModel model = event.timerModel;
 
     emit(state.copyWith(duration: model.time, boyomi: model.increment, period: model.periods,
       blackDuration: model.time, whiteDuration: model.time));

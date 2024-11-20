@@ -92,5 +92,10 @@ final class _WhiteTimerTicked extends TimerEvent {
 
 final class TimerInitialLoad extends TimerEvent{
 
-  const TimerInitialLoad();
+  final TimerModel timerModel;
+
+  const TimerInitialLoad({required this.timerModel});
+
+  @override
+  List<Object?> get props => [timerModel];
 }

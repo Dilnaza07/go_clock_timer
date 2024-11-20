@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_clock/features/setings/presentation/screen/set_page.dart';
+import 'package:go_clock/features/settings/models/timer_model.dart';
 import 'package:go_clock/features/timer_view/models/game_state.dart';
 
 import '../../../../core/di/init_module.dart';
+import '../../../settings/presentation/screen/set_page.dart';
 import '../../ticker.dart';
 import '../bloc/timer_bloc.dart';
 
 class ClockPage extends StatelessWidget {
-  const ClockPage({super.key});
+  const ClockPage({super.key, required this.timerModel});
+
+  final TimerModel timerModel;
 
   @override
   Widget build(BuildContext context) {
     GameState;
     return BlocProvider(
-      create: (context) => getIt<TimerBloc>(),
+      create: (context) => getIt.get<TimerBloc>(param1: timerModel),
       child: const TimerView(),
     );
   }
