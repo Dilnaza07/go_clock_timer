@@ -39,4 +39,13 @@ class TimerDbService {
     );
     return maps.isNotEmpty ? TimerEntity.fromJson(maps[0]) : null;
   }
+
+  Future<int> deleteTimerModel(int id) async {
+    final db = await _timerDatabase.database;
+    return await db.delete(
+      tableName,
+      where: '${columnId} = ?',
+      whereArgs: [id],
+    );
+  }
 }

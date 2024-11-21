@@ -41,6 +41,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     await _timerDbService.insertTimer(entity);
   }
 
+
 //   @override
 //   Future<TimerModel> getTimerSettings() async {
 //     final int time = prefs?.getInt(timeKey) ?? 1200;
@@ -61,4 +62,27 @@ class SettingsRepositoryImpl implements SettingsRepository {
         .map((e) => TimerModel(id: e.id, time: e.time, increment: e.increment, periods: e.periods))
         .toList());
   }
+
+  @override
+  Future deleteTimerModel(int id) async {
+    try {
+      final deletedRowCount = await _timerDbService.deleteTimerModel(id);
+      if (deletedRowCount > 0) {
+        print('TimerModel with id $id successfully deleted.');
+      } else {
+        print('No TimerModel found with id $id.');
+      }
+      return deletedRowCount;
+    } catch (e) {
+      print('Error deleting TimerModel: $e');
+      rethrow;
+    }
+  }
+
+  // @override
+  // Future<List<TimerModel>> deleteTimerModel(int id) async {
+  //
+  //   return _timerDbService.deleteTimerModel(id);
+  //
+  // }
 }

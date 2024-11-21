@@ -5,6 +5,7 @@ import 'package:go_clock/core/di/init_module.dart';
 import 'package:go_clock/features/timer_view/presentation/screen/clock_page.dart';
 import '../../../timer_view/presentation/bloc/timer_bloc.dart';
 import '../../models/settings_state.dart';
+import '../../models/timer_model.dart';
 import '../bloc/settings_bloc.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -21,16 +22,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
         backgroundColor: Colors.blueGrey[300],
       ),
       body: BlocProvider(
-        create: (context) => SettingsBloc(getIt()),
+        create: (context) =>
+        getIt<SettingsBloc>()
+          ..add(LoadSettingsEvent()),
         child: BlocListener<SettingsBloc, SettingsState>(
           listener: (context, state) {
-
             final timerModel = state.timerModel;
 
-            if (state.settingsState == SettingsStateEnum.settingsSaved && timerModel!=null) {
+            if (state.settingsState == SettingsStateEnum.settingsSaved && timerModel != null) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ClockPage(timerModel: timerModel,)),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ClockPage(
+                          timerModel: timerModel,
+                        )),
               );
             }
           },
@@ -61,35 +67,7 @@ class _Body extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text('Выберите готовый сет:'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Установка значений для блиц-игры
-                    bloc.timeController.text = '10';
-                    bloc.incrementController.text = '30';
-                    bloc.periodsController.text = '3';
-                  },
-                  child: Text('Блиц: 10min + 3x30s'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey[100],
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Установка значений для стандартной игры
-                    bloc.timeController.text = '20';
-                    bloc.incrementController.text = '30';
-                    bloc.periodsController.text = '3';
-                  },
-                  child: Text('Стандарт: 20min + 3x30s'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueGrey[100],
-                  ),
-                ),
-              ],
-            ),
+            PresetsListWidget(bloc: bloc),
             SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
@@ -120,26 +98,34 @@ class _Body extends StatelessWidget {
                     hint: 'Например, 5',
                   ),
                   SizedBox(height: 36),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_validateFields(context, bloc)) {
-                          bloc.add(SettingsDataSaved());
-                        }
-                      },
-                      child: Text(
-                        'Старт',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                        backgroundColor: Colors.blueGrey[800],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_validateFields(context, bloc)) {
+                            bloc.add(SettingsGameStarted());
+                          }
+                        },
+                        child: Text(
+                          'Старт',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        textStyle: TextStyle(fontSize: 18),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                          backgroundColor: Colors.blueGrey[800],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          textStyle: TextStyle(fontSize: 18),
+                        ),
                       ),
-                    ),
+                      Column(
+                        children: [
+                          ElevatedButton(onPressed: () {}, child: Text('Создать пресет')),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -167,11 +153,10 @@ class _Body extends StatelessWidget {
     );
   }
 
-  Widget _buildNumberInput(
-      TextEditingController controller, {
-        required String label,
-        String? hint,
-      }) {
+  Widget _buildNumberInput(TextEditingController controller, {
+    required String label,
+    String? hint,
+  }) {
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
@@ -206,16 +191,76 @@ class _Body extends StatelessWidget {
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Ошибка"),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("ОК"),
+      builder: (context) =>
+          AlertDialog(
+            title: Text("Ошибка"),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("ОК"),
+              ),
+            ],
           ),
-        ],
+    );
+  }
+}
+
+class PresetsListWidget extends StatelessWidget {
+  const PresetsListWidget({
+    super.key,
+    required this.bloc,
+  });
+
+  final SettingsBloc bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    final presets = context.select((SettingsBloc bloc) => bloc.state.presets);
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: presets.length,
+        itemBuilder: (BuildContext context, int index) {
+          return PresetWidget(timerModel: presets[index]);
+        },
       ),
+    );
+  }
+}
+
+class PresetWidget extends StatelessWidget {
+  const PresetWidget({
+    super.key,
+    required this.timerModel,
+  });
+
+  final TimerModel timerModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          onPressed: () {
+            context.read<SettingsBloc>().add(SettingsPresetClickEvent(timerModel: timerModel));
+          },
+          child: Row(
+            children: [
+              Text('${timerModel.time}min + ${timerModel.periods}x${timerModel.increment}s'),
+              IconButton(onPressed: () {
+                context.read<SettingsBloc>().add(DeleteSettingsPresetEvent(timerModel.id));
+
+              }, icon: Icon(Icons.clear, color: Colors.red,)
+                , padding: EdgeInsets.zero,),
+            ],
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueGrey[100],
+          ),
+        );
+      },
     );
   }
 }
