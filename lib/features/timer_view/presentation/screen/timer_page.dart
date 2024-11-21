@@ -4,7 +4,7 @@ import 'package:go_clock/features/settings/models/timer_model.dart';
 import 'package:go_clock/features/timer_view/models/game_state.dart';
 
 import '../../../../core/di/init_module.dart';
-import '../../../settings/presentation/screen/set_page.dart';
+import '../../../settings/presentation/screen/settings_page.dart';
 import '../../ticker.dart';
 import '../bloc/timer_bloc.dart';
 

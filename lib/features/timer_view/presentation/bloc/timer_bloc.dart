@@ -73,8 +73,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   _onTimerInitialLoad(TimerInitialLoad event, Emitter<TimerState> emit) async {
     TimerModel model = event.timerModel;
 
-    emit(state.copyWith(duration: model.time, boyomi: model.increment, period: model.periods,
-      blackDuration: model.time, whiteDuration: model.time));
+    emit(state.copyWith(duration: model.time * 60 , boyomi: model.increment, period: model.periods,
+      blackDuration: model.time * 60, whiteDuration: model.time * 60));
   }
 
   _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) async{

@@ -1,302 +1,274 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_clock/core/di/init_module.dart';
+import 'package:go_clock/features/timer_view/presentation/screen/timer_page.dart';
+import '../../../timer_view/presentation/bloc/timer_bloc.dart';
+import '../../models/settings_state.dart';
+import '../../models/timer_model.dart';
+import '../bloc/settings_bloc.dart';
 
-class TimerSettingsPage extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   @override
-  _TimerSettingsPageState createState() => _TimerSettingsPageState();
+  _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _TimerSettingsPageState extends State<TimerSettingsPage> {
-  bool _isSameTime = true; // Переменная для отслеживания выбора одинакового времени
-  String? _selectedPlayer1Minutes;
-  String? _selectedPlayer1Seconds;
-  String? _selectedPlayer2Minutes;
-  String? _selectedPlayer2Seconds;
-
-  List<String> _minutesOptions = [
-    '30 секунд', '35 секунд', '40 секунд', '45 секунд', '50 секунд', '55 секунд',
-    '1 минута', '2 минуты', '3 минуты', '4 минуты', '5 минут', '6 минут',
-    '7 минут', '8 минут', '9 минут', '10 минут', '12 минут', '15 минут',
-    '20 минут', '25 минут', '30 минут', '35 минут', '40 минут', '45 минут',
-    '50 минут', '55 минут', '1 час', '2 часа', '3 часа', '4 часа'
-  ];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Настройки Таймера'),
+        title: Text('Настройки таймера'),
+        backgroundColor: Colors.blueGrey[300],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  // Блок готовых сетов (пресетов)
-                  Text(
-                    'Блок Пресетов',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text('Выберите готовый сет:'),
-                  ListTile(
-                    title: Text('Блиц игра: 10 минут основное время, 3 по 30 секунд байоми'),
-                    leading: Radio(value: 'blitz', groupValue: 'gameType', onChanged: (_) {}),
-                  ),
-                  ListTile(
-                    title: Text('Стандарт: 20 минут основное время, 3 по 30 секунд байоми'),
-                    leading: Radio(value: 'standard', groupValue: 'gameType', onChanged: (_) {}),
-                  ),
-                  SizedBox(height: 20),
+      body: BlocProvider(
+        create: (context) => getIt<SettingsBloc>()..add(LoadSettingsEvent()),
+        child: BlocListener<SettingsBloc, SettingsState>(
+          listener: (context, state) {
+            final timerModel = state.timerModel;
 
-                  // Кнопка выбора одинакового времени
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isSameTime,
-                        onChanged: (value) {
-                          setState(() {
-                            _isSameTime = value!;
-                            // Если выбрано одинаковое время, сбрасываем поля для игрока 2
-                            if (_isSameTime) {
-                              _selectedPlayer2Minutes = _selectedPlayer1Minutes;
-                              _selectedPlayer2Seconds = _selectedPlayer1Seconds;
-                            }
-                          });
-                        },
-                      ),
-                      Text('Выбрать одинаковое время для обоих игроков'),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-
-                  // Блок времени игроков
-                  Text(
-                    'Блок Времени Игроков',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text('Основное время (Игрок 1):'),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButton<String>(
-                          value: _selectedPlayer1Minutes,
-                          hint: Text('Минуты'),
-                          isExpanded: true,
-                          items: _minutesOptions.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              _selectedPlayer1Minutes = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: DropdownButton<String>(
-                          value: _selectedPlayer1Seconds,
-                          hint: Text('Секунды'),
-                          isExpanded: true,
-                          items: _minutesOptions.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              _selectedPlayer1Seconds = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-
-                  // Поля для ввода времени второго игрока
-                  if (!_isSameTime) ...[
-                    Text('Основное время (Игрок 2):'),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButton<String>(
-                            value: _selectedPlayer2Minutes,
-                            hint: Text('Минуты'),
-                            isExpanded: true,
-                            items: _minutesOptions.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedPlayer2Minutes = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: DropdownButton<String>(
-                            value: _selectedPlayer2Seconds,
-                            hint: Text('Секунды'),
-                            isExpanded: true,
-                            items: _minutesOptions.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedPlayer2Seconds = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                  ],
-
-                  // Блок японского байоми
-                  Text(
-                    'Японское байоми:',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Количество периодов',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Минуты',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: 'Секунды',
-                            border: OutlineInputBorder(),
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-
-                  // Блок настроек звука
-                  Text(
-                    'Блок Настроек Звука',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  SwitchListTile(
-                    title: Text('Включить звук'),
-                    value: true,
-                    onChanged: (value) {},
-                  ),
-                  SwitchListTile(
-                    title: Text('Включить звук при окончании времени'),
-                    value: false,
-                    onChanged: (value) {},
-                  ),
-                  SizedBox(height: 10),
-                  Text('Ползунок громкости:'),
-                  Slider(
-                    value: 0.5,
-                    onChanged: (value) {},
-                    min: 0,
-                    max: 1,
-                    divisions: 10,
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Логика для тестирования звука
-                    },
-                    child: Text('Тест звука'),
-                  ),
-                  SizedBox(height: 20),
-                ],
-              ),
-            ),
-            // Кнопки внизу
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Логика для создания нового пресета
-                    },
-                    child: Text('Создать пресет'),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Логика для удаления пресета
-                    },
-                    child: Text('Удалить пресет'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            // Центрированная кнопка PLAY
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(
-                onPressed: () {
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), backgroundColor: Colors.blue, // Цвет кнопки
-                  elevation: 5,
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                ),
-                child: Text(
-                  'PLAY',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ),
-            SizedBox(height: 16), // Отступ внизу
-          ],
+            if (state.settingsState == SettingsStateEnum.settingsSaved && timerModel != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ClockPage(
+                          timerModel: timerModel,
+                        )),
+              );
+            }
+          },
+          child: _Body(),
         ),
       ),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<SettingsBloc>();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(children: [
+        Expanded(
+          child: ListView(children: [
+            Text(
+              'Блок Пресетов',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text('Выберите готовый пресет:'),
+            PresetsListWidget(bloc: bloc),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionTitle("Основное время"),
+                  _buildDescription("Введите основное время для каждого игрока"),
+                  _buildNumberInput(
+                    bloc.timeController,
+                    label: 'Время (минуты)',
+                    hint: 'Например, 30',
+                  ),
+                  SizedBox(height: 24),
+                  _buildSectionTitle("Японское байоми"),
+                  _buildDescription("Введите дополнительное время для каждого игрока"),
+                  _buildNumberInput(
+                    bloc.incrementController,
+                    label: 'Доп. время (секунды)',
+                    hint: 'Например, 60',
+                  ),
+                  SizedBox(height: 24),
+                  _buildSectionTitle("Периоды"),
+                  _buildDescription("Введите количество периодов байоми"),
+                  _buildNumberInput(
+                    bloc.periodsController,
+                    label: 'Кол-во периодов',
+                    hint: 'Например, 5',
+                  ),
+                  SizedBox(height: 36),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_validateFields(context, bloc)) {
+                            bloc.add(SettingsGameStarted());
+                          }
+                        },
+                        child: Text(
+                          'Старт',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                          backgroundColor: Colors.blueGrey[800],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          textStyle: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                if (_validateFields(context, bloc)) {
+                                  bloc.add(SettingsDataSaved());
+                                }
+                              },
+                              child: Text('Создать пресет')),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ]),
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _buildDescription(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+      ),
+    );
+  }
+
+  Widget _buildNumberInput(
+    TextEditingController controller, {
+    required String label,
+    String? hint,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+    );
+  }
+
+  bool _validateFields(BuildContext context, SettingsBloc bloc) {
+    if (bloc.timeController.text.isEmpty ||
+        bloc.incrementController.text.isEmpty ||
+        bloc.periodsController.text.isEmpty) {
+      _showErrorDialog(context, "Все поля должны быть заполнены.");
+      return false;
+    }
+    if (int.tryParse(bloc.timeController.text) == null ||
+        int.tryParse(bloc.incrementController.text) == null ||
+        int.tryParse(bloc.periodsController.text) == null) {
+      _showErrorDialog(context, "Пожалуйста, введите корректные числовые значения.");
+      return false;
+    }
+    return true;
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Ошибка"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("ОК"),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PresetsListWidget extends StatelessWidget {
+  const PresetsListWidget({
+    super.key,
+    required this.bloc,
+  });
+
+  final SettingsBloc bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    final presets = context.select((SettingsBloc bloc) => bloc.state.presets);
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: presets.length,
+        itemBuilder: (BuildContext context, int index) {
+          return PresetWidget(timerModel: presets[index]);
+        },
+      ),
+    );
+  }
+}
+
+class PresetWidget extends StatelessWidget {
+  const PresetWidget({
+    super.key,
+    required this.timerModel,
+  });
+
+  final TimerModel timerModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        return ElevatedButton(
+          onPressed: () {
+            context.read<SettingsBloc>().add(SettingsPresetClickEvent(timerModel: timerModel));
+          },
+          child: Row(
+            children: [
+              Text('${timerModel.time}min + ${timerModel.periods}x${timerModel.increment}s'),
+              IconButton(
+                onPressed: () {
+                  context.read<SettingsBloc>().add(DeleteSettingsPresetEvent(timerModel.id));
+                },
+                icon: Icon(
+                  Icons.clear,
+                  color: Colors.red,
+                ),
+                padding: EdgeInsets.zero,
+              ),
+            ],
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueGrey[100],
+          ),
+        );
+      },
     );
   }
 }

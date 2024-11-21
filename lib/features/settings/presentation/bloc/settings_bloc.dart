@@ -21,7 +21,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         )) {
     on<LoadSettingsEvent>(_onLoadSettings);
     on<SettingsGameStarted>(_onStartGame);
-    on<SettingsDataSaved>(_onSaveSettings);
+    on<SettingsDataSaved>(_onSaveSettingsPreset);
     on<SettingsPresetClickEvent>(_onSettingsPresetClick);
     on<DeleteSettingsPresetEvent>(_onDeleteSettingsPreset);
   }
@@ -39,7 +39,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   _onStartGame(SettingsGameStarted event, Emitter<SettingsState> emit) async {
-    final time = (int.tryParse(timeController.text) ?? 1) * 60;
+    final time = (int.tryParse(timeController.text) ?? 1);
     final increment = int.tryParse(incrementController.text) ?? 10;
     final periods = int.tryParse(periodsController.text) ?? 2;
     final model = TimerModel(time: time, increment: increment, periods: periods);
@@ -47,13 +47,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(settingsState: SettingsStateEnum.settingsSaved, timerModel: model));
   }
 
-  _onSaveSettings(SettingsDataSaved event, Emitter<SettingsState> emit) async {
-    final time = (int.tryParse(timeController.text) ?? 1) * 60;
+  _onSaveSettingsPreset(SettingsDataSaved event, Emitter<SettingsState> emit) async {
+    final time = (int.tryParse(timeController.text) ?? 1);
     final increment = int.tryParse(incrementController.text) ?? 10;
     final periods = int.tryParse(periodsController.text) ?? 2;
     final model = TimerModel(time: time, increment: increment, periods: periods);
 
     await repository.saveTimerSettings(model);
+    add(LoadSettingsEvent());
   }
 
   _onSettingsPresetClick(SettingsPresetClickEvent event, Emitter<SettingsState> emit) {

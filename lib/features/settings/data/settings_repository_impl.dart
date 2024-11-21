@@ -79,10 +79,4 @@ class SettingsRepositoryImpl implements SettingsRepository {
     }
   }
 
-  // @override
-  // Future<List<TimerModel>> deleteTimerModel(int id) async {
-  //
-  //   return _timerDbService.deleteTimerModel(id);
-  //
-  // }
 }

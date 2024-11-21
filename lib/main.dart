@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/di/init_module.dart';
-import 'features/settings/presentation/screen/set_page.dart';
-import 'features/timer_view/presentation/screen/clock_page.dart';
+import 'features/settings/presentation/screen/settings_page.dart';
+import 'features/timer_view/presentation/screen/timer_page.dart';
 
 void main() {
   initMainModule();
