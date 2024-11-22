@@ -44,17 +44,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     // Загружаем пресеты из базы данных
     final timerModels = await repository.getTimerSettings();
 
-    if (timerModels.isEmpty) {
-      // Если база пуста, добавляем дефолтные пресеты
-      for (final preset in defaultPresets) {
-        await repository.saveTimerSettings(preset);
-      }
-      // Повторная загрузка после вставки дефолтных данных
-      final updatedPresets = await repository.getTimerSettings();
-      emit(state.copyWith(presets: updatedPresets));
-    } else {
-      emit(state.copyWith(presets: timerModels));
-    }
+    final presets = timerModels + defaultPresets;
+
+      emit(state.copyWith(presets: presets));
+
   }
 
   _onStartGame(SettingsGameStarted event, Emitter<SettingsState> emit) async {
