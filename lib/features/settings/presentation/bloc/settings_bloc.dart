@@ -32,10 +32,29 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final TextEditingController incrementController = TextEditingController();
   final TextEditingController periodsController = TextEditingController();
 
+
+  // Дефолтные пресеты
+  final List<TimerModel> defaultPresets = [
+    TimerModel(time: 1200, increment: 30, periods: 3, isDefault: true), // Standard Game
+    TimerModel(time: 60, increment: 20, periods: 3, isDefault: true), // Blitz Game
+  ];
+
   _onLoadSettings(LoadSettingsEvent event, Emitter<SettingsState> emit) async {
+
+    // Загружаем пресеты из базы данных
     final timerModels = await repository.getTimerSettings();
 
-    emit(state.copyWith(presets: timerModels));
+    if (timerModels.isEmpty) {
+      // Если база пуста, добавляем дефолтные пресеты
+      for (final preset in defaultPresets) {
+        await repository.saveTimerSettings(preset);
+      }
+      // Повторная загрузка после вставки дефолтных данных
+      final updatedPresets = await repository.getTimerSettings();
+      emit(state.copyWith(presets: updatedPresets));
+    } else {
+      emit(state.copyWith(presets: timerModels));
+    }
   }
 
   _onStartGame(SettingsGameStarted event, Emitter<SettingsState> emit) async {
