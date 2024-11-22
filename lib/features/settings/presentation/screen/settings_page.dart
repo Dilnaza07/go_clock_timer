@@ -270,7 +270,7 @@ class PresetWidget extends StatelessWidget {
               Text('${timerModel.time}min + ${timerModel.periods}x${timerModel.increment}s'),
               IconButton(
                 onPressed: () {
-                  context.read<SettingsBloc>().add(DeleteSettingsPresetEvent(timerModel.id));
+                  context.read<SettingsBloc>().add(DeleteSettingsPresetEvent(timerModel.id,timerModel.isDefault));
                 },
                 icon: Icon(
                   Icons.clear,

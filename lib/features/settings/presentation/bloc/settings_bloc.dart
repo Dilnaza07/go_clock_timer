@@ -35,8 +35,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   // Дефолтные пресеты
   final List<TimerModel> defaultPresets = [
-    TimerModel(time: 1200, increment: 30, periods: 3, isDefault: true), // Standard Game
-    TimerModel(time: 60, increment: 20, periods: 3, isDefault: true), // Blitz Game
+    TimerModel(time: 20, increment: 30, periods: 3, isDefault: true), // Standard Game
+    TimerModel(time: 1, increment: 20, periods: 3, isDefault: true), // Blitz Game
   ];
 
   _onLoadSettings(LoadSettingsEvent event, Emitter<SettingsState> emit) async {
@@ -84,8 +84,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   _onDeleteSettingsPreset(DeleteSettingsPresetEvent event, Emitter<SettingsState> emit) async{
     final int? id = event.id;
+    final bool? isDefault = event.isDefault;
 
-    if (id != null) {
+    if (id != null && isDefault != true) {
       await repository.deleteTimerModel(id);
 
       add(LoadSettingsEvent());

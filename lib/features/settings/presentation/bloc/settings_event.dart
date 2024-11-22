@@ -25,6 +25,7 @@ class SettingsPresetClickEvent extends SettingsEvent {
 class DeleteSettingsPresetEvent extends SettingsEvent {
 
   final int? id;
+  final bool? isDefault;
 
-  DeleteSettingsPresetEvent(this.id);
+  DeleteSettingsPresetEvent(this.id, this.isDefault);
 }
