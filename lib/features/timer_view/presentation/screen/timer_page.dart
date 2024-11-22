@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_clock/features/settings/models/timer_model.dart';
 import 'package:go_clock/features/timer_view/models/game_state.dart';
-
 import '../../../../core/di/init_module.dart';
 import '../../../settings/presentation/screen/settings_page.dart';
-import '../../ticker.dart';
 import '../bloc/timer_bloc.dart';
 
 class ClockPage extends StatelessWidget {
@@ -281,7 +279,8 @@ class Actions extends StatelessWidget {
             height: 120,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
               FloatingActionButton(
-                  child: Icon(Icons.pause),
+                  child: Icon(
+                    (state.isGameRunning) ? Icons.play_arrow : Icons.pause,),
                   onPressed: () {
                     context.read<TimerBloc>().add(const GamePaused());
                   }),
@@ -295,7 +294,10 @@ class Actions extends StatelessWidget {
               FloatingActionButton(
                   child: Icon(Icons.settings),
                   onPressed: () {
-                    context.read<TimerBloc>().add(const GamePaused());
+
+                    if(state.isGameRunning){
+                      context.read<TimerBloc>().add(const GamePaused());
+                    }
 
                     Navigator.push(
                       context,

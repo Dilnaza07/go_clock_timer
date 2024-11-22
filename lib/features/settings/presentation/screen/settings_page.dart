@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_clock/core/di/init_module.dart';
 import 'package:go_clock/features/timer_view/presentation/screen/timer_page.dart';
-import '../../../timer_view/presentation/bloc/timer_bloc.dart';
 import '../../models/settings_state.dart';
 import '../../models/timer_model.dart';
 import '../bloc/settings_bloc.dart';
@@ -53,107 +52,127 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<SettingsBloc>();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(children: [
-        Expanded(
-          child: Padding(
-           // padding: const EdgeInsets.all(8.0),
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: ListView(children: [
-              Text(
-                'Блок Пресетов',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text('Выберите готовый пресет:'),
-              SizedBox(height: 10),
-              PresetsListWidget(bloc: bloc),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionTitle("Основное время"),
-                    _buildDescription("Введите основное время для каждого игрока"),
-                    _buildNumberInput(
-                      bloc.timeController,
-                      label: 'Время (минуты)',
-                      hint: 'Например, 30',
-                    ),
-                    SizedBox(height: 24),
-                    _buildSectionTitle("Японское байоми"),
-                    _buildDescription("Введите дополнительное время для каждого игрока"),
-                    _buildNumberInput(
-                      bloc.incrementController,
-                      label: 'Доп. время (секунды)',
-                      hint: 'Например, 60',
-                    ),
-                    SizedBox(height: 24),
-                    _buildSectionTitle("Периоды"),
-                    _buildDescription("Введите количество периодов байоми"),
-                    _buildNumberInput(
-                      bloc.periodsController,
-                      label: 'Кол-во периодов',
-                      hint: 'Например, 5',
-                    ),
-                    SizedBox(height: 36),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      children: [
+        // Задний фон
+        Positioned.fill(
+          child: Image.asset(
+            'assets/bd/bd3.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(children: [
+            Expanded(
+              child: Padding(
+                // padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                child: ListView(children: [
+                  Text(
+                    'Блок Пресетов',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text('Выберите готовый пресет:'),
+                  SizedBox(height: 10),
+                  PresetsListWidget(bloc: bloc),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_validateFields(context, bloc)) {
-                              bloc.add(SettingsGameStarted());
-                            }
-                          },
-                          child: Text(
-                            'Старт',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
-                            backgroundColor: Colors.blueGrey[800],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            textStyle: TextStyle(fontSize: 18),
-                          ),
+                        _buildSectionTitle("Основное время"),
+                        _buildDescription("Введите основное время для каждого игрока"),
+                        _buildNumberInput(
+                          bloc.timeController,
+                          label: 'Время (минуты)',
+                          hint: 'Например, 30',
                         ),
-                        Column(
+                        SizedBox(height: 24),
+                        _buildSectionTitle("Японское байоми"),
+                        _buildDescription("Введите дополнительное время для каждого игрока"),
+                        _buildNumberInput(
+                          bloc.incrementController,
+                          label: 'Доп. время (секунды)',
+                          hint: 'Например, 60',
+                        ),
+                        SizedBox(height: 24),
+                        _buildSectionTitle("Периоды"),
+                        _buildDescription("Введите количество периодов байоми"),
+                        _buildNumberInput(
+                          bloc.periodsController,
+                          label: 'Кол-во периодов',
+                          hint: 'Например, 5',
+                        ),
+                        SizedBox(height: 36),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ElevatedButton(
-                                onPressed: () {
-                                  if (_validateFields(context, bloc)) {
-                                    bloc.add(SettingsDataSaved());
-                                  }
-                                },
-                                child: Text('Создать пресет'),
-                              // style: ElevatedButton.styleFrom(
-                              //   padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
-                              //   backgroundColor: Colors.blueGrey[100],
-                              //   shape: RoundedRectangleBorder(
-                              //     borderRadius: BorderRadius.circular(10),
-                              //   ),
-                              //   textStyle: TextStyle(fontSize: 18),
-                              // ),
+                              onPressed: () {
+                                if (_validateFields(context, bloc)) {
+                                  bloc.add(SettingsGameStarted());
+                                }
+                              },
+                              child: Text(
+                                'Старт',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+                                backgroundColor: Colors.blueGrey[800],
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                textStyle: TextStyle(fontSize: 18),
+                              ),
+                            ),
+                            SizedBox(width: 5,),
+                            Column(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_validateFields(context, bloc)) {
+                                      bloc.add(SettingsDataSaved());
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blueGrey[200],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),),
+                                  ),
+                                  child: Text('Создать пресет'),
+                                  // style: ElevatedButton.styleFrom(
+                                  //   padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
+                                  //   backgroundColor: Colors.blueGrey[100],
+                                  //   shape: RoundedRectangleBorder(
+                                  //     borderRadius: BorderRadius.circular(10),
+                                  //   ),
+                                  //   textStyle: TextStyle(fontSize: 18),
+                                  // ),
 
 
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              )
-            ]),
-          ),
+                  )
+                ]),
+              ),
+            ),
+          ]),
         ),
-      ]),
+      ],
     );
   }
+          }
+
 
   Widget _buildSectionTitle(String title) {
     return Text(
@@ -223,7 +242,7 @@ class _Body extends StatelessWidget {
       ),
     );
   }
-}
+
 
 class PresetsListWidget extends StatelessWidget {
   const PresetsListWidget({
@@ -283,7 +302,7 @@ class PresetWidget extends StatelessWidget {
             ],
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blueGrey[100],
+            backgroundColor: Colors.blueGrey[200],
           ),
         );
       },

@@ -246,6 +246,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     if (state.isGameRunning == true && state.gamestate == GameState.blackRunning) {
       if (_blackTickerSubscription?.isPaused == false) {
         _blackTickerSubscription?.pause();
+
       }
       emit(state.copyWith(isGameRunning: false));
       debugPrint('_blackTickerSubscription?.pause();');

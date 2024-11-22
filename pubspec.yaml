@@ -70,6 +70,9 @@ flutter:
       - assets/sounds/button.mp3
       - assets/sounds/buzzer.mp3
       - assets/sounds/timeout.mp3
+      - assets/bd/bd3.png
+      - assets/bd/bd2.jpg
+      - assets/bd/bd.jpg
 #     - images/a_dot_burr.jpeg
 #     - images/a_dot_ham.jpeg
 

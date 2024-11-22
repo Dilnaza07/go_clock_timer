@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:go_clock/features/settings/data/database/models/timer_entity.dart';
 import 'package:go_clock/features/settings/data/database/service/timer_db_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
