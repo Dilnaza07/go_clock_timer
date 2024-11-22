@@ -72,13 +72,13 @@ class TimerViewWhite extends StatelessWidget {
 
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
-        Color? fieldColor = Colors.grey;
+        Color? fieldColor = Colors.blueGrey;
         if( state.gamestate == GameState.blackPaused){
-          fieldColor = Colors.purpleAccent; }
+          fieldColor = Colors.blue; }
         // else if(state.isGameRunning==false && state.gamestate!= GameState.initial){
         //   fieldColor = Colors.yellow;}
         else if(state.gamestate == GameState.whiteTimeOver){
-          fieldColor = Colors.red[800];
+          fieldColor = Colors.red;
         }
 
         return Material(
@@ -174,9 +174,9 @@ class TimerViewBlack extends StatelessWidget {
     return BlocBuilder<TimerBloc, TimerState>(
       builder: (context, state) {
 
-        Color? fieldColor = Colors.grey;
+        Color? fieldColor = Colors.blueGrey;
         if( state.gamestate == GameState.blackRunning){
-          fieldColor = Colors.purpleAccent; }
+          fieldColor = Colors.blue; }
         // else if(state.isGameRunning==false && state.gamestate!= GameState.initial){
         //   fieldColor = Colors.orange;}
         else if(state.gamestate == GameState.blackTimeOver){

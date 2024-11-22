@@ -17,8 +17,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Настройки таймера')),
-        backgroundColor: Colors.blueGrey[300],
+        title: Center(child: Text('Настройки таймера', style: TextStyle(color: Colors.black),)),
+        backgroundColor: Colors.blueGrey,
       ),
       body: BlocProvider(
         create: (context) => getIt<SettingsBloc>()..add(LoadSettingsEvent()),
@@ -57,7 +57,7 @@ class _Body extends StatelessWidget {
         // Задний фон
         Positioned.fill(
           child: Image.asset(
-            'assets/bd/bd3.png',
+            'assets/bd/bd4.png',
             fit: BoxFit.cover,
           ),
         ),
@@ -145,15 +145,6 @@ class _Body extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10),),
                                   ),
                                   child: Text('Создать пресет'),
-                                  // style: ElevatedButton.styleFrom(
-                                  //   padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
-                                  //   backgroundColor: Colors.blueGrey[100],
-                                  //   shape: RoundedRectangleBorder(
-                                  //     borderRadius: BorderRadius.circular(10),
-                                  //   ),
-                                  //   textStyle: TextStyle(fontSize: 18),
-                                  // ),
-
 
                                 ),
                               ],
@@ -162,7 +153,7 @@ class _Body extends StatelessWidget {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ]),
               ),
             ),
