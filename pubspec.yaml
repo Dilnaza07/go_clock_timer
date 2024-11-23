@@ -74,6 +74,11 @@ flutter:
       - assets/bd/bd2.jpg
       - assets/bd/bd.jpg
       - assets/bd/bd4.png
+      - assets/bd/bd5.png
+      - assets/icons/i.png
+      - assets/icons/icon.png
+      - assets/icons/i2.png
+      - assets/icons/i4.png
 #     - images/a_dot_burr.jpeg
 #     - images/a_dot_ham.jpeg
 

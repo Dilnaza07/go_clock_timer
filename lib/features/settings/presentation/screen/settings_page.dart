@@ -57,7 +57,7 @@ class _Body extends StatelessWidget {
         // Задний фон
         Positioned.fill(
           child: Image.asset(
-            'assets/bd/bd4.png',
+            'assets/bd/bd5.png',
             fit: BoxFit.cover,
           ),
         ),
@@ -150,6 +150,12 @@ class _Body extends StatelessWidget {
                               ],
                             ),
                           ],
+                        ),
+
+                        Center(
+                          child: Image.asset('assets/icons/i4.png',
+                            width: 170,
+                            height: 120,),
                         ),
                       ],
                     ),
