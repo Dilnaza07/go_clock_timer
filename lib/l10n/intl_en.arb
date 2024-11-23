@@ -1,0 +1,16 @@
+{
+  "settingsTitle": "Timer Settings",
+  "presetsBlock": "Presets",
+  "choosePreset": "Choose a preset:",
+  "mainTime": "Main Time",
+  "mainTimeDescription": "Enter the main time for each player",
+  "additionalTime": "Japanese Byomi",
+  "additionalTimeDescription": "Enter additional time for each player",
+  "periods": "Periods",
+  "periodsDescription": "Enter the number of byomi periods",
+  "startButton": "Start",
+  "createPresetButton": "Create Preset",
+  "errorDialogTitle": "Error",
+  "errorDialogMessage": "All fields must be filled.",
+  "errorDialogInvalidValue": "Please enter valid numerical values."
+}
