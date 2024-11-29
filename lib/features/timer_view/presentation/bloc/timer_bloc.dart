@@ -73,8 +73,25 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   _onTimerInitialLoad(TimerInitialLoad event, Emitter<TimerState> emit) async {
     TimerModel model = event.timerModel;
 
-    emit(state.copyWith(duration: model.time * 60 , boyomi: model.increment, period: model.periods,
-      blackDuration: model.time * 60, whiteDuration: model.time * 60));
+    // Если время 0, сразу переключаемся на байоми
+    if (model.time == 0) {
+      emit(state.copyWith(
+        duration: 0,
+        boyomi: model.increment,
+        period: model.periods,
+        blackDuration: model.increment,
+        whiteDuration: model.increment,
+        isBayomi: true,
+      ));
+    } else {
+      emit(state.copyWith(
+        duration: model.time * 60,
+        boyomi: model.increment,
+        period: model.periods,
+        blackDuration: model.time * 60,
+        whiteDuration: model.time * 60,
+      ));
+    }
   }
 
   _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) async{
@@ -189,7 +206,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           blackDuration: event.blackDuration,
           gamestate: GameState.blackRunning,
           isGameRunning: true));
-    } else if (state.period > state.blackByoyomiCount) {
+    } else if (state.period > state.blackByoyomiCount || state.duration == 0) {
 
       print("boyomi black: #----> ${state.boyomi}");
       emit(state.copyWith(blackDuration: state.boyomi, blackByoyomiCount: state.blackByoyomiCount + 1, isBayomi: true));
