@@ -31,8 +31,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => ClockPage(
-                      timerModel: timerModel,
-                    )),
+                          timerModel: timerModel,
+                        )),
               );
             }
           },
@@ -86,18 +86,51 @@ class _Body extends StatelessWidget {
                       children: [
                         _buildSectionTitle("Основное время"),
                         _buildDescription("Введите основное время для каждого игрока"),
-                        _buildNumberInput(
-                          bloc.timeController,
-                          label: 'Время (минуты)',
-                          hint: 'Например, 30',
+                        // Main time input (minutes and seconds in a row)
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildNumberInput(
+                                bloc.timeController,
+                                label: 'Минуты',
+                                hint: 'Например, 20',
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: _buildNumberInput(
+                             //   bloc.timeSecondsController,
+                                bloc.timeController,
+                                label: 'Секунды',
+                                hint: 'Например, 30',
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 24),
                         _buildSectionTitle("Японское байоми"),
                         _buildDescription("Введите дополнительное время для каждого игрока"),
-                        _buildNumberInput(
-                          bloc.incrementController,
-                          label: 'Доп. время (секунды)',
-                          hint: 'Например, 60',
+                        // Byo-yomi input (seconds in a single field)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Expanded(
+                              child: _buildNumberInput(
+                                bloc.incrementController,
+                                label: 'Минуты',
+                                hint: 'Например, 30',
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: _buildNumberInput(
+                                //timeSecondsController
+                                bloc.incrementController,
+                                label: 'Секунды',
+                                hint: 'Например, 30',
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 24),
                         _buildSectionTitle("Периоды"),
@@ -105,7 +138,7 @@ class _Body extends StatelessWidget {
                         _buildNumberInput(
                           bloc.periodsController,
                           label: 'Кол-во периодов',
-                          hint: 'Например, 5',
+                          hint: 'Например, 3',
                         ),
                         SizedBox(height: 36),
                         Row(
@@ -168,77 +201,77 @@ class _Body extends StatelessWidget {
       ],
     );
   }
-}
+          }
 
 
-Widget _buildSectionTitle(String title) {
-  return Text(
-    title,
-    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-  );
-}
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    );
+  }
 
-Widget _buildDescription(String text) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-    child: Text(
-      text,
-      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-    ),
-  );
-}
+  Widget _buildDescription(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+      ),
+    );
+  }
 
-Widget _buildNumberInput(
+  Widget _buildNumberInput(
     TextEditingController controller, {
-      required String label,
-      String? hint,
-    }) {
-  return TextField(
-    controller: controller,
-    keyboardType: TextInputType.number,
-    decoration: InputDecoration(
-      labelText: label,
-      hintText: hint,
-      border: OutlineInputBorder(),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-    ),
-    inputFormatters: [
-      FilteringTextInputFormatter.digitsOnly,
-    ],
-  );
-}
-
-bool _validateFields(BuildContext context, SettingsBloc bloc) {
-  if (bloc.timeController.text.isEmpty ||
-      bloc.incrementController.text.isEmpty ||
-      bloc.periodsController.text.isEmpty) {
-    _showErrorDialog(context, "Все поля должны быть заполнены.");
-    return false;
-  }
-  if (int.tryParse(bloc.timeController.text) == null ||
-      int.tryParse(bloc.incrementController.text) == null ||
-      int.tryParse(bloc.periodsController.text) == null) {
-    _showErrorDialog(context, "Пожалуйста, введите корректные числовые значения.");
-    return false;
-  }
-  return true;
-}
-
-void _showErrorDialog(BuildContext context, String message) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text("Ошибка"),
-      content: Text(message),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text("ОК"),
-        ),
+    required String label,
+    String? hint,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
       ],
-    ),
-  );
-}
+    );
+  }
+
+  bool _validateFields(BuildContext context, SettingsBloc bloc) {
+    if (bloc.timeController.text.isEmpty ||
+        bloc.incrementController.text.isEmpty ||
+        bloc.periodsController.text.isEmpty) {
+      _showErrorDialog(context, "Все поля должны быть заполнены.");
+      return false;
+    }
+    if (int.tryParse(bloc.timeController.text) == null ||
+        int.tryParse(bloc.incrementController.text) == null ||
+        int.tryParse(bloc.periodsController.text) == null) {
+      _showErrorDialog(context, "Пожалуйста, введите корректные числовые значения.");
+      return false;
+    }
+    return true;
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Ошибка"),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("ОК"),
+          ),
+        ],
+      ),
+    );
+  }
 
 
 class PresetsListWidget extends StatelessWidget {
