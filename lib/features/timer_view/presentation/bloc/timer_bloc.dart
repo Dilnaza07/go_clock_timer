@@ -96,14 +96,15 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) async{
 
+
    await playSound('sounds/button.mp3');
     if (state.gamestate == GameState.initial && state.blackCount == 0) {
-      add(WhiteTimerStarted(whiteDuration: state.duration, gameState: GameState.blackPaused));
+      add(WhiteTimerStarted(whiteDuration: state.whiteDuration, gameState: GameState.blackPaused));
       debugPrint(
           'BlackTimerStarted, blackCount: ${state.blackCount}, gamestate: ${state.gamestate}');
     } else if (state.gamestate == GameState.blackRunning && state.whiteCount == 0) {
       emit(state.copyWith(blackCount: state.blackCount + 1));
-      add(WhiteTimerStarted(whiteDuration: state.duration, gameState: GameState.blackPaused));
+      add(WhiteTimerStarted(whiteDuration: state.whiteDuration, gameState: GameState.blackPaused));
 
       debugPrint(
           'WhiteTimerStarted, blackCount: ${state.blackCount}, gamestate: ${state.gamestate}');
@@ -119,11 +120,11 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
   _onWhiteTimerClick(WhiteTimerClick event, Emitter<TimerState> emit) async{
    await playSound('sounds/button.mp3');
     if (state.gamestate == GameState.initial && state.whiteCount == 0) {
-      add(BlackTimerStarted(blackDuration: state.duration, gameState: GameState.blackRunning));
+      add(BlackTimerStarted(blackDuration: state.blackDuration, gameState: GameState.blackRunning));
       debugPrint('WhiteTimerStarted, whiteCount: ${state.whiteCount} gamestate ${state.gamestate}');
     } else if (state.gamestate == GameState.blackPaused && state.blackCount == 0) {
       emit(state.copyWith(whiteCount: state.whiteCount + 1));
-      add(BlackTimerStarted(blackDuration: state.duration));
+      add(BlackTimerStarted(blackDuration: state.blackDuration));
 
       debugPrint(
           'BlackTimerStarted, whiteCount: ${state.whiteCount}, gamestate: ${state.gamestate}');
@@ -206,7 +207,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           blackDuration: event.blackDuration,
           gamestate: GameState.blackRunning,
           isGameRunning: true));
-    } else if (state.period > state.blackByoyomiCount || state.duration == 0) {
+    } else if (state.period > state.blackByoyomiCount) {
 
       print("boyomi black: #----> ${state.boyomi}");
       emit(state.copyWith(blackDuration: state.boyomi, blackByoyomiCount: state.blackByoyomiCount + 1, isBayomi: true));
