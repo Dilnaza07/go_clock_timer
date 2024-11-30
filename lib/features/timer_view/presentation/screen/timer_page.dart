@@ -284,13 +284,36 @@ class Actions extends StatelessWidget {
                   onPressed: () {
                     context.read<TimerBloc>().add(const GamePaused());
                   }),
+
               FloatingActionButton(
-                  child: Icon(
-                    Icons.refresh,
-                  ),
-                  onPressed: () {
-                    context.read<TimerBloc>().add(const GameReset());
-                  }),
+                child: Icon(Icons.refresh),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext dialogContext) {
+                      return AlertDialog(
+                        title: Text('Сброс игры'),
+                        content: Text('Вы уверены, что хотите сбросить игру?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                              BlocProvider.of<TimerBloc>(context).add(const GameReset());
+                            },
+                            child: Text('Да'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop();
+                            },
+                            child: Text('Нет'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
               FloatingActionButton(
                   child: Icon(Icons.settings),
                   onPressed: () {

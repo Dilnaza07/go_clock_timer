@@ -15,19 +15,17 @@ part 'timer_event.dart';
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final SettingsRepository repository;
   final Ticker _blackticker;
-
   final player = AudioPlayer();
-
-
-
-
   StreamSubscription<int>? _blackTickerSubscription;
   StreamSubscription<int>? _whiteTickerSubscription;
 
   //TODO: установить начальное состояние
-  TimerBloc({required this.repository, required Ticker blackTicker, required Ticker whiteTicker, required TimerModel timerModel})
+  TimerBloc(
+      {required this.repository,
+      required Ticker blackTicker,
+      required Ticker whiteTicker,
+      required TimerModel timerModel})
       : _blackticker = blackTicker,
-        // _whiteTicker = whiteTicker,
         super(TimerState(
           whiteDuration: 0,
           blackDuration: 0,
@@ -40,7 +38,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           blackByoyomiCount: 0,
           duration: 0,
           boyomi: 0,
-          period: 0, isBayomi: false,
+          period: 0,
+          isBayomi: false,
         )) {
 //TODO: реализовать обработчики событий
     on<TimerInitialLoad>(_onTimerInitialLoad);
@@ -54,7 +53,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<_BlackTimerTicked>(_onBlackTicked);
     on<_WhiteTimerTicked>(_onWhiteTicked);
     on<GamePaused>(_onGamePaused);
-
     add(TimerInitialLoad(timerModel: timerModel));
   }
 
@@ -72,7 +70,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   _onTimerInitialLoad(TimerInitialLoad event, Emitter<TimerState> emit) async {
     TimerModel model = event.timerModel;
-
     // Если время 0, сразу переключаемся на байоми
     if (model.time == 0) {
       emit(state.copyWith(
@@ -94,10 +91,8 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     }
   }
 
-  _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) async{
-
-
-   await playSound('sounds/button.mp3');
+  _onBlackTimerClick(BlackTimerClick event, Emitter<TimerState> emit) async {
+    await playSound('sounds/button.mp3');
     if (state.gamestate == GameState.initial && state.blackCount == 0) {
       add(WhiteTimerStarted(whiteDuration: state.whiteDuration, gameState: GameState.blackPaused));
       debugPrint(
@@ -105,33 +100,29 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     } else if (state.gamestate == GameState.blackRunning && state.whiteCount == 0) {
       emit(state.copyWith(blackCount: state.blackCount + 1));
       add(WhiteTimerStarted(whiteDuration: state.whiteDuration, gameState: GameState.blackPaused));
-
       debugPrint(
           'WhiteTimerStarted, blackCount: ${state.blackCount}, gamestate: ${state.gamestate}');
     } else if (state.gamestate == GameState.blackRunning && state.whiteCount > 0) {
       emit(state.copyWith(blackCount: state.blackCount + 1));
       add(BlackTimerPaused());
-
       debugPrint(
           'BlackTimerPaused, blackCount: ${state.blackCount}, gamestate: ${state.gamestate}');
     }
   }
 
-  _onWhiteTimerClick(WhiteTimerClick event, Emitter<TimerState> emit) async{
-   await playSound('sounds/button.mp3');
+  _onWhiteTimerClick(WhiteTimerClick event, Emitter<TimerState> emit) async {
+    await playSound('sounds/button.mp3');
     if (state.gamestate == GameState.initial && state.whiteCount == 0) {
       add(BlackTimerStarted(blackDuration: state.blackDuration, gameState: GameState.blackRunning));
       debugPrint('WhiteTimerStarted, whiteCount: ${state.whiteCount} gamestate ${state.gamestate}');
     } else if (state.gamestate == GameState.blackPaused && state.blackCount == 0) {
       emit(state.copyWith(whiteCount: state.whiteCount + 1));
       add(BlackTimerStarted(blackDuration: state.blackDuration));
-
       debugPrint(
           'BlackTimerStarted, whiteCount: ${state.whiteCount}, gamestate: ${state.gamestate}');
     } else if (state.gamestate == GameState.blackPaused && state.blackCount > 0) {
       emit(state.copyWith(whiteCount: state.whiteCount + 1));
       add(BlackTimerResumed());
-
       debugPrint(
           'BlackTimerResumed, whiteCount: ${state.whiteCount}, gamestate: ${state.gamestate} ');
     }
@@ -139,7 +130,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onBlackStarted(BlackTimerStarted event, Emitter<TimerState> emit) {
     _blackTickerSubscription?.cancel();
-
     debugPrint('_onBlackStarted: gameState=${event.gameState}');
     emit(state.copyWith(gamestate: event.gameState));
     if (_whiteTickerSubscription?.isPaused == false) {
@@ -151,7 +141,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _blackTickerSubscription?.onDone(() => debugPrint('_blackTickerSubscription.onDone'));
     _blackTickerSubscription
         ?.onError((error) => debugPrint('_blackTickerSubscription.onError $error'));
-    //  _blackTickerSubscription?.onData((data)=>debugPrint('_blackTickerSubscription.onData $data'));
   }
 
   void _onWhiteStarted(WhiteTimerStarted event, Emitter<TimerState> emit) {
@@ -167,7 +156,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     _whiteTickerSubscription?.onDone(() => debugPrint('_whiteTickerSubscription.onDone'));
     _whiteTickerSubscription
         ?.onError((error) => debugPrint('_whiteTickerSubscription.onError $error'));
-    //  _whiteTickerSubscription?.onData((data)=>debugPrint('_whiteTickerSubscription.onData $data'));
   }
 
   void _onBlackPaused(BlackTimerPaused event, Emitter<TimerState> emit) {
@@ -177,7 +165,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
       if (_blackTickerSubscription?.isPaused == false) {
         _blackTickerSubscription?.pause();
       }
-
       _whiteTickerSubscription?.resume();
       emit(state.copyWith(gamestate: GameState.blackPaused));
     }
@@ -189,18 +176,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
       if (_whiteTickerSubscription?.isPaused == false) {
         _whiteTickerSubscription?.pause();
       }
-
       _blackTickerSubscription?.resume();
       emit(state.copyWith(gamestate: GameState.blackRunning));
     }
   }
 
-  void _onBlackTicked(_BlackTimerTicked event, Emitter<TimerState> emit) async{
+  void _onBlackTicked(_BlackTimerTicked event, Emitter<TimerState> emit) async {
     debugPrint(
         '_onBlackTicked,state.blackDuration ${event.blackDuration}, gamestate: ${state.gamestate} ');
-
     if (event.blackDuration > 0) {
-      if(event.blackDuration < 10 && state.isBayomi){
+      if (event.blackDuration < 10 && state.isBayomi) {
         playSound('sounds/timeout.mp3');
       }
       emit(state.copyWith(
@@ -208,14 +193,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           gamestate: GameState.blackRunning,
           isGameRunning: true));
     } else if (state.period > state.blackByoyomiCount) {
-
       print("boyomi black: #----> ${state.boyomi}");
-      emit(state.copyWith(blackDuration: state.boyomi, blackByoyomiCount: state.blackByoyomiCount + 1, isBayomi: true));
+      emit(state.copyWith(
+          blackDuration: state.boyomi,
+          blackByoyomiCount: state.blackByoyomiCount + 1,
+          isBayomi: true));
       add(BlackTimerStarted(blackDuration: state.boyomi));
       debugPrint('Началось доп время ЧЕРНЫХ, период: ${state.blackByoyomiCount} ');
     } else {
       emit(state.copyWith(blackDuration: 0, gamestate: GameState.blackTimeOver));
-    await  playSound('sounds/buzzer.mp3');
+      await playSound('sounds/buzzer.mp3');
     }
   }
 
@@ -223,8 +210,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     debugPrint(
         '_onWhiteTicked,state.whiteDuration ${event.whiteDuration}, gamestate: ${state.gamestate} ');
     if (event.whiteDuration > 0) {
-
-      if(event.whiteDuration < 10 && state.isBayomi){
+      if (event.whiteDuration < 10 && state.isBayomi) {
         playSound('sounds/timeout.mp3');
       }
       emit(state.copyWith(
@@ -232,14 +218,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
           // gamestate: GameState.blackPaused,
           isGameRunning: true));
     } else if (state.period > state.whiteByoyomiCount) {
-
       print("boyomi white: #----> ${state.boyomi}");
-      emit(state.copyWith(whiteDuration: state.boyomi, whiteByoyomiCount: state.whiteByoyomiCount + 1, isBayomi: true));
+      emit(state.copyWith(
+          whiteDuration: state.boyomi,
+          whiteByoyomiCount: state.whiteByoyomiCount + 1,
+          isBayomi: true));
       add(WhiteTimerStarted(whiteDuration: state.boyomi, gameState: GameState.blackPaused));
       debugPrint('Началось доп время БЕЛЫХ, период: ${state.whiteByoyomiCount} ');
     } else {
       emit(state.copyWith(whiteDuration: 0, gamestate: GameState.whiteTimeOver));
-     await playSound('sounds/buzzer.mp3');
+      await playSound('sounds/buzzer.mp3');
     }
   }
 
@@ -255,8 +243,15 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
         blackByoyomiCount: 0,
         whiteByoyomiCount: 0));
 
-    emit(state.copyWith(
-        blackDuration: state.duration, whiteDuration: state.duration, gamestate: GameState.initial));
+    if (state.duration != 0) {
+      emit(state.copyWith(
+          blackDuration: state.duration,
+          whiteDuration: state.duration,
+          gamestate: GameState.initial));
+    } else {
+      emit(state.copyWith(
+          blackDuration: state.boyomi, whiteDuration: state.boyomi, gamestate: GameState.initial));
+    }
   }
 
   void _onGamePaused(GamePaused event, Emitter<TimerState> emit) {
@@ -264,7 +259,6 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     if (state.isGameRunning == true && state.gamestate == GameState.blackRunning) {
       if (_blackTickerSubscription?.isPaused == false) {
         _blackTickerSubscription?.pause();
-
       }
       emit(state.copyWith(isGameRunning: false));
       debugPrint('_blackTickerSubscription?.pause();');
@@ -289,13 +283,9 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     }
   }
 
-
   // Функция для воспроизведения звука
   Future<void> playSound(String assetPath) async {
     print('Играет звук!!!');
     return player.play(AssetSource(assetPath));
-
   }
-
-
 }
